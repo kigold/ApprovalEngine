@@ -6,6 +6,7 @@ namespace SampleApp.Api.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        [HttpGet]
         public IActionResult Get()
         {
             return Ok(new[] { "Red", "Green", "Blue" });
