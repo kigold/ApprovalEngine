@@ -3,6 +3,9 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddEFDbContext(builder.Configuration);
+builder.Services.AddServices(builder.Configuration);
+
 // Add services to the container.
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

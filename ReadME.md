@@ -8,8 +8,9 @@ There are times when we need to implement some kind of approval flow in our proj
 This project implements an Approval flow can satisfy the basic approval flow need for any project.
 
 ## Structure
-- Web API Layer (basic presentation layer)
-- Core (main logic and implementation)
+- SampleApp.API Layer (sample presentation layer)
+- SampleApp.Core (sample logic and implementation)
+- ApprovalEngine (Approval Engine Implementation)
 - Unit Test
 It will have the main ApprovalEngine logic
 It will also have an API Layer as it will be a full fledge solution with a sample Entity that 

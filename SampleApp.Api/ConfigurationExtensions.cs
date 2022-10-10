@@ -1,10 +1,38 @@
-﻿using Microsoft.OpenApi.Models;
-using System.Reflection;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using SampleApp.Core.Data;
+using SampleApp.Core.Data.Repositories;
+using SampleApp.Core.Services;
 
 namespace SampleApp.Api
 {
     internal static class ConfigurationExtensions
     {
+        public static void AddServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddScoped<IStudentService, StudentService>();
+            services.AddScoped<IStudentRepository, StudentRepository>();
+        }
+
+        public static void DatabaseSetup(this WebApplication app)
+        {
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+
+                var context = services.GetRequiredService<SampleDbContext>();
+                context.Database.Migrate();
+            }
+        }
+
+        public static void AddEFDbContext(this IServiceCollection services, IConfiguration configuration)
+        {
+            var connectionString = configuration.GetConnectionString("Default");
+            services.AddDbContext<SampleDbContext>(options =>
+            {
+                options.UseSqlServer(connectionString, b => b.MigrationsAssembly(typeof(SampleDbContext).FullName));
+            });
+        }
 
         public static void AddAppSwagger(this IServiceCollection services)
         {
