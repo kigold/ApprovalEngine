@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApp.Api", "SampleApp.Api\SampleApp.Api.csproj", "{6C4D7A82-DCF7-4F93-B396-40E2F0B2DE79}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleApp.Api", "SampleApp.Api\SampleApp.Api.csproj", "{6C4D7A82-DCF7-4F93-B396-40E2F0B2DE79}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApp.Core", "SampleApp.Core\SampleApp.Core.csproj", "{518319E7-FACF-45C5-89B5-7D6F4DBA5A21}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleApp.Core", "SampleApp.Core\SampleApp.Core.csproj", "{518319E7-FACF-45C5-89B5-7D6F4DBA5A21}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApprovalEngine", "ApprovalEngine\ApprovalEngine.csproj", "{F13663B3-9017-4EB2-BB35-55332580995C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{518319E7-FACF-45C5-89B5-7D6F4DBA5A21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{518319E7-FACF-45C5-89B5-7D6F4DBA5A21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{518319E7-FACF-45C5-89B5-7D6F4DBA5A21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F13663B3-9017-4EB2-BB35-55332580995C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F13663B3-9017-4EB2-BB35-55332580995C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F13663B3-9017-4EB2-BB35-55332580995C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F13663B3-9017-4EB2-BB35-55332580995C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
