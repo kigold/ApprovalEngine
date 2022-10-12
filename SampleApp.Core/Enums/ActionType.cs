@@ -6,6 +6,7 @@
         Approve,
         Decline,
         Reject,
-        Return
+        Return,
+        Pending
     }
 }

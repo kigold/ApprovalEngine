@@ -1,6 +1,6 @@
 ﻿using ApprovalEngine.Enums;
 
-namespace ApprovalEngine.Entities
+namespace SampleApp.Core.Data.Entities.ApprovalEngine
 {
     public class ApprovalStage : Entity
     {

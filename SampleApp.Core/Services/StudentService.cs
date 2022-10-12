@@ -1,5 +1,5 @@
-﻿using SampleApp.Core.Data;
-using SampleApp.Core.Data.Entities;
+﻿using SampleApp.Core.Data.Entities;
+using SampleApp.Core.Data.Repositories;
 using SampleApp.Core.Models;
 
 namespace SampleApp.Core.Services

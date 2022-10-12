@@ -1,5 +1,5 @@
-﻿using ApprovalEngine.Entities;
-using ApprovalEngine.Enums;
+﻿using ApprovalEngine.Enums;
+using SampleApp.Core.Data.Entities.ApprovalEngine;
 
 namespace ApprovalEngine.Models
 {
@@ -8,7 +8,7 @@ namespace ApprovalEngine.Models
             string Stage,
             int Order,
             /* Order of the stage that the flow should go to when declined */
-            int DeclineToOrder 
+            int DeclineToOrder
         );
 
     public record CreateApprovalStage(
@@ -21,7 +21,6 @@ namespace ApprovalEngine.Models
             int Version,
             ApprovalType ApprovalRequestType
         );
-    }
 
     public class ApprovalStageResponse
     {
