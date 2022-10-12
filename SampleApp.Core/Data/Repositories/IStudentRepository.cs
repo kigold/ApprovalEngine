@@ -1,6 +1,6 @@
 ﻿using SampleApp.Core.Data.Entities;
 
-namespace SampleApp.Core.Data
+namespace SampleApp.Core.Data.Repositories
 {
     public interface IStudentRepository : IDisposable
     {

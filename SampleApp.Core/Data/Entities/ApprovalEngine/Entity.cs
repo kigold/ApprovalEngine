@@ -1,4 +1,4 @@
-﻿namespace ApprovalEngine.Entities
+﻿namespace SampleApp.Core.Data.Entities.ApprovalEngine
 {
     public abstract class Entity
     {

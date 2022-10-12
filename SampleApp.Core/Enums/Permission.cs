@@ -2,7 +2,7 @@
 {
     public enum Permission
     {
-        Requester,
+        HOD,
         Approver,
         Admin,
         IT

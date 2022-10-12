@@ -5,18 +5,20 @@ namespace ApprovalEngine
     public interface IApprovalService
     {
         //Delegates
-        event Action<bool, long> OnApproval;
-        event Action<bool, long> OnDecline;
-        event Action<long> OnReject;
-        event Action<long> OnReturn;
+        event Action<bool, string> OnApproval;
+        event Action<bool, string> OnDecline;
+        event Action<string> OnReject;
+        event Action<string> OnReturn;
 
         //Action
         Task<ResultModel<bool>> CreateApprovalRequest(CreateApprovalRequest model);
         Task<ResultModel<bool>> ApproveRequest(ApprovalModel model);
         Task<ResultModel<bool>> DeclineRequest(ApprovalModel model);
         Task<ResultModel<bool>> RejectRequest(ApprovalModel model);
-        Task<ResultModel<bool>> ReturnRequest(ApprovalModel model); //Return back to the user for input
-        Task<ResultModel<bool>> UpdateRequestToPending(long approvalRequestId); //Update request back to pending after user input
+        /* Return back to the user for input */
+        Task<ResultModel<bool>> ReturnRequest(ApprovalModel model);
+        /* Update request back to pending after user input */
+        Task<ResultModel<bool>> UpdateRequestToPending(long approvalRequestId);
 
         //Gets
         Task<ResultModel<ApprovalRequestResponse>> GetRequest(long approvalRequestId);

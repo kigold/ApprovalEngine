@@ -1,4 +1,4 @@
-﻿using ApprovalEngine.Entities;
+﻿using SampleApp.Core.Data.Entities.ApprovalEngine;
 
 namespace ApprovalEngine.Models
 {
