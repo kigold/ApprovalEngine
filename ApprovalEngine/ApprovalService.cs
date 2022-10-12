@@ -334,7 +334,7 @@ namespace ApprovalEngine
 
         public async Task<ResultModel<bool>> DeleteRequestStages(DeleteApprovalStages model)
         {
-            var approvalStages = _approvalStageRepository.Get(x => x.ApprovalType == model.ApprovalType && x.Version == model.Version).ToList();
+            var approvalStages = _approvalStageRepository.Get().Where(x => x.ApprovalType == model.ApprovalType && x.Version == model.Version).ToList();
             if (!approvalStages.Any())
                 return new ResultModel<bool>("Approval Stages not found");
 
