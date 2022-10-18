@@ -34,15 +34,15 @@ namespace UnitTests.ApprovalEngineTest
                 {
                     Permission = Permission.HOD
                 },
-                MockApprovalRepository.ApprovalRequests.Where(x => MockApprovalStageRepository.ApprovalStages.Any(s => s.Permission == Permission.HOD && s.ApprovalType == x.ApprovalType && x.Version == s.Version)).ToList()
+                MockApprovalRepository.ApprovalRequests.Where(x => MockApprovalStageRepository.ApprovalStages.Any(s => s.Permission == Permission.HOD && s.ApprovalType == x.ApprovalType && x.Version == s.Version && x.StageOrder == s.StageOrder)).ToList()
             };
             yield return new object[]
              {
                 new GetApprovalsRequestByPermission
                 {
-                    Permission = Permission.HOD
+                    Permission = Permission.Admin
                 },
-                MockApprovalRepository.ApprovalRequests.Where(x => MockApprovalStageRepository.ApprovalStages.Any(s => s.Permission == Permission.HOD && s.ApprovalType == x.ApprovalType && x.Version == s.Version)).ToList()
+                MockApprovalRepository.ApprovalRequests.Where(x => MockApprovalStageRepository.ApprovalStages.Any(s => s.Permission == Permission.Admin && s.ApprovalType == x.ApprovalType && x.Version == s.Version && x.StageOrder == s.StageOrder)).ToList()
 };
         }
 
@@ -188,7 +188,7 @@ namespace UnitTests.ApprovalEngineTest
         public async Task GivenNoExisitingStage_CreateApprovalRequest_ReturnError()
         {
             //Arrange
-            var request = new CreateApprovalRequest(ApprovalType.AdminUser, "1");
+            var request = new CreateApprovalRequest(ApprovalType.Teacher, "1");
 
             //Act
             var result = await _approvalService.CreateApprovalRequest(request);

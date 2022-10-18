@@ -30,7 +30,7 @@ namespace ApprovalEngine
         public async Task<ResultModel<bool>> CreateApprovalRequest(CreateApprovalRequest model)
         {
             //Get First Stage
-            var getAllStagesForApprovalTypeQuery = _approvalStageRepository.Get(x => x.ApprovalType == model.ApprovalType);
+            var getAllStagesForApprovalTypeQuery = _approvalStageRepository.Get().Where(x => x.ApprovalType == model.ApprovalType);
             var stagesQuery = getAllStagesForApprovalTypeQuery.Where(x => x.Version == getAllStagesForApprovalTypeQuery.Max(s => (int?)s.Version))//Get latest stages
                                                      .ToList();
 
@@ -249,14 +249,14 @@ namespace ApprovalEngine
             var queryable = _approvalRepository.Get();
 
             //TODO Implement Filtering
-            //if (request.EntityId != null)
-            //    queryable = queryable.Where(x => x.EntityId == request.EntityId);
-            //if (request.ApprovalRequestType != null)
-            //    queryable = queryable.Where(x => x.ApprovalType == request.ApprovalRequestType);
-            //if (request.IsPending != null)
-            //    queryable = queryable.Where(x => FilterIsPendingRequest(x.Status, request.IsPending.Value));
-            //if (request.IsReturned != null)
-            //    queryable = queryable.Where(x => x.Status == ApprovalStatus.Returned && request.IsReturned.Value);
+            if (request.EntityId != null)
+                queryable = queryable.Where(x => x.EntityId == request.EntityId);
+            if (request.ApprovalRequestType != null)
+                queryable = queryable.Where(x => x.ApprovalType == request.ApprovalRequestType);
+            if (request.IsPending != null)
+                queryable = queryable.Where(x => FilterIsPendingRequest(x.Status, request.IsPending.Value));
+            if (request.IsReturned != null)
+                queryable = queryable.Where(x => x.Status == ApprovalStatus.Returned && request.IsReturned.Value);
 
             //TODO impmement Paging
             //var pagedData = await queryable.ToPagedListAsync(request.PageIndex, request.PageSize);
@@ -266,6 +266,8 @@ namespace ApprovalEngine
 
         public async Task<ResultModel<PagedList<ApprovalRequestResponse>>> GetRequestsByPermission(GetApprovalsRequestByPermission request)
         {
+            var a = _approvalRepository.Get();
+            var b = _approvalStageRepository.Get();
             //TODO convert to raw sql query to avoid loading all data into memory
             var query = (from approval in _approvalRepository.Get()
                          join stage in _approvalStageRepository.Get().Where(x => x.Permission == request.Permission)
@@ -300,7 +302,7 @@ namespace ApprovalEngine
 
         public async Task<ResultModel<List<ApprovalStageResponse>>> GetApprovalStages(GetApprovalStageRequest model)
         {
-            var result = _approvalStageRepository.Get(x => x.ApprovalType == model.ApprovalRequestType && x.Version == model.Version);
+            var result = _approvalStageRepository.Get().Where(x => x.ApprovalType == model.ApprovalRequestType && x.Version == model.Version);
 
             return new ResultModel<List<ApprovalStageResponse>>(result.Select(x => (ApprovalStageResponse)x).ToList());
         }
@@ -339,7 +341,7 @@ namespace ApprovalEngine
                 return new ResultModel<bool>("Approval Stages not found");
 
             //Check for pending Approval request dependent on the approvalsStages
-            var hasPendingRequests = _approvalRepository.Get(x => x.ApprovalType == model.ApprovalType && x.Version == model.Version && IsPendingApprovalStatus(x.Status)).Any();//TODO Optimize query;
+            var hasPendingRequests = _approvalRepository.Get().Any(x => x.ApprovalType == model.ApprovalType && x.Version == model.Version && IsPendingApprovalStatus(x.Status));//TODO Optimize query;
             if (hasPendingRequests)
                 return new ResultModel<bool>("The selected Approval Stages have pending approval requests and cannot be deleted");
 
