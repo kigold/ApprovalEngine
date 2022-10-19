@@ -57,7 +57,7 @@ namespace UnitTests.ApprovalEngineTest.Mock
                 },
                 new ApprovalStage
                 {
-                    Id = 1,
+                    Id = 5,
                     ApprovalType = ApprovalType.StudentUser,
                     DeclineToOrder = 1,
                     StageOrder = 1,
@@ -67,7 +67,7 @@ namespace UnitTests.ApprovalEngineTest.Mock
                 },
                 new ApprovalStage
                 {
-                    Id = 2,
+                    Id = 6,
                     ApprovalType = ApprovalType.StudentUser,
                     DeclineToOrder = 1,
                     StageOrder = 2,
@@ -77,7 +77,7 @@ namespace UnitTests.ApprovalEngineTest.Mock
                 },
                 new ApprovalStage
                 {
-                    Id = 3,
+                    Id = 7,
                     ApprovalType = ApprovalType.StudentUser,
                     DeclineToOrder = 2,
                     StageOrder = 3,
@@ -87,13 +87,23 @@ namespace UnitTests.ApprovalEngineTest.Mock
                 },
                 new ApprovalStage
                 {
-                    Id = 4,
+                    Id = 8,
                     ApprovalType = ApprovalType.StudentUser,
                     DeclineToOrder = 3,
                     StageOrder = 4,
                     Name = "Approver",
                     Permission = Permission.Approver,
                     Version = 2
+                },              
+                new ApprovalStage
+                {
+                    Id = 9,
+                    ApprovalType = ApprovalType.AdminUser,
+                    DeclineToOrder = 1,
+                    StageOrder = 1,
+                    Name = "HOD",
+                    Permission = Permission.HOD,
+                    Version = 1
                 }
         };
 
