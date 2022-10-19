@@ -1,0 +1,9 @@
+version: '3.4'
+
+services:
+  samplewebapp:
+    build:
+      context: .
+      dockerfile: SampleApp.Api/Dockerfile
+    ports:
+      - 5002:80
