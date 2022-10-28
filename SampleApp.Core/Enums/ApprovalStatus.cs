@@ -4,7 +4,7 @@
     {
         Created, //Pending
         Pending, //Pending
-        Declined, //Pending
+        //Declined, //Pending
         Approved, //Completed
         Rejected, //Completed
         Returned,

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ApprovalEngine.Models;
+using Microsoft.AspNetCore.Mvc;
 using SampleApp.Core.Models;
 using SampleApp.Core.Services;
 
@@ -8,7 +9,7 @@ namespace SampleApp.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class StudentController : ControllerBase
+    public class StudentController : BaseController
     {
         private readonly IStudentService _studentService;
         public StudentController(IStudentService studentService)
@@ -18,40 +19,37 @@ namespace SampleApp.Api.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<StudentResponse>), 200)]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] PagedRequestModel request)
         {
-            return Ok(await _studentService.GetAllStudents());
+            return await Process(() => _studentService.GetAllStudents(request));
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(StudentResponse), 200)]
+        [ProducesResponseType(typeof(ApiResponse<StudentResponse>), 200)]
         public async Task<IActionResult> Get(long id)
         {
-            return Ok(await _studentService.GetStudent(id));
+            return await Process(() => _studentService.GetStudent(id));
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), 200)]
         public async Task<IActionResult> Post([FromBody] CreateStudentRequest model)
         {
-            await _studentService.CreateStudent(model);
-            return Ok();
+            return await Process(() => _studentService.CreateStudent(model));
         }
 
         [HttpPut]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), 200)]
         public async Task<IActionResult> Put([FromBody] UpdateStudentRequest model)
         {
-            await _studentService.UpdateStudent(model);
-            return Ok();
+            return await Process(() => _studentService.UpdateStudent(model));
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), 200)]
         public async Task<IActionResult> Delete(long id)
         {
-            await _studentService.DeleteStudent(id);
-            return Ok();
+            return await Process(() => _studentService.DeleteStudent(id));
         }
     }
 }

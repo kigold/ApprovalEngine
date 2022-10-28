@@ -5,10 +5,10 @@ namespace ApprovalEngine
     public interface IApprovalService
     {
         //Delegates
-        event Action<bool, string> OnApproval;
-        event Action<bool, string> OnDecline;
-        event Action<string> OnReject;
-        event Action<string> OnReturn;
+        event Func<bool, string, Task> OnApproval;
+        event Func<bool, string, Task> OnDecline;
+        event Func<string, Task> OnReject;
+        event Func<string, Task> OnReturn;
 
         //Action
         Task<ResultModel<bool>> CreateApprovalRequest(CreateApprovalRequest model);

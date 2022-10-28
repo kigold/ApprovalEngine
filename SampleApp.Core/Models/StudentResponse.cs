@@ -10,6 +10,7 @@ namespace SampleApp.Core.Models
         public string Email { get; set; }
         public DateTime Created { get; set; }
         public DateTime? Modified { get; set; }
+        public string Status { get; set; }
 
         public static implicit operator StudentResponse(Student model)
         {
@@ -20,7 +21,8 @@ namespace SampleApp.Core.Models
                 Email = model.Email,
                 LastName = model.LastName,
                 Created = model.Created,
-                Modified = model.Modified
+                Modified = model.Modified,
+                Status = model.Status.ToString()
             };
         }
     }

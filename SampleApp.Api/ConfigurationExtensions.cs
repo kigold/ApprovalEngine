@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ApprovalEngine;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using SampleApp.Core.Data;
+using SampleApp.Core.Data.Entities;
+using SampleApp.Core.Data.Entities.ApprovalEngine;
 using SampleApp.Core.Data.Repositories;
 using SampleApp.Core.Services;
 
@@ -11,7 +14,12 @@ namespace SampleApp.Api
         public static void AddServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IStudentService, StudentService>();
-            services.AddScoped<IStudentRepository, StudentRepository>();
+            services.AddTransient<IRepository<Student>, Repository<Student>>();
+            services.AddTransient<IRepository<ApprovalRequest>, Repository<ApprovalRequest>>();
+            services.AddTransient<IRepository<ApprovalHistory>, Repository<ApprovalHistory>>();
+            services.AddTransient<IRepository<ApprovalStage>, Repository<ApprovalStage>>();
+            services.AddScoped<IStudentService, StudentService>();
+            services.AddScoped<IApprovalService, ApprovalService>();
         }
 
         public static void DatabaseSetup(this WebApplication app)

@@ -3,7 +3,7 @@
 namespace ApprovalEngine.Models
 {
     public record DeleteApprovalStages(
-            ApprovalType ApprovalType,
+            ApprovalType ApprovalRequestType,
             int Version
         );
 }

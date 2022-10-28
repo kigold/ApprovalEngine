@@ -14,5 +14,6 @@ namespace SampleApp.Core.Data.Repositories
         void Delete(object id);
         void Delete(TEntity entityToDelete);
         void Update(TEntity entityToUpdate);
+        Task SaveChangesAsync();
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace SampleApp.Core.Data.Entities
+﻿using SampleApp.Core.Enums;
+
+namespace SampleApp.Core.Data.Entities
 {
     public class Student
     {
@@ -8,5 +10,6 @@
         public string Email { get; set; }
         public DateTime Created { get; set; }
         public DateTime? Modified { get; set; }
+        public StudentStatus Status { get; set; }
     }
 }

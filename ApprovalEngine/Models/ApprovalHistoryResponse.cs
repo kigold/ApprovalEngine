@@ -10,6 +10,7 @@ namespace ApprovalEngine.Models
         public string Stage { get; set; }
         public int StageOrder { get; set; }
         public DateTime DateTime { get; set; }
+        public string? Comment { get; set; }
 
         public static implicit operator ApprovalHistoryResponse(ApprovalHistory model)
         {
@@ -20,7 +21,8 @@ namespace ApprovalEngine.Models
                 DateTime = model.Created,
                 Stage = model.Stage,
                 StageOrder = model.StageOrder,
-                User = model.Creator
+                User = model.Creator,
+                Comment = model.Comment
             };
         }
     }

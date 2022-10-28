@@ -7,6 +7,7 @@
         Decline,
         Reject,
         Return,
-        Pending
+        Pending,
+        UpdateToPending
     }
 }

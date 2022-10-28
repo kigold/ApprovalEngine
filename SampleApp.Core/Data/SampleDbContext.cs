@@ -27,6 +27,8 @@ namespace SampleApp.Core.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfigurationsFromAssembly(typeof(SampleDbContext).Assembly);
+
+            SeedData(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -58,27 +60,30 @@ namespace SampleApp.Core.Data
                     StageOrder = 1,
                     Permission = ApprovalEngine.Enums.Permission.HOD,
                     DeclineToOrder = 1,
-                    Version = 1
+                    Version = 1,
+                    Creator = "Tester"
                 },
                 new ApprovalStage()
                 {
                     Id = 2,
                     ApprovalType = ApprovalEngine.Enums.ApprovalType.StudentUser,
                     Name = "Admin",
-                    StageOrder = 1,
+                    StageOrder = 2,
                     Permission = ApprovalEngine.Enums.Permission.Admin,
                     DeclineToOrder = 1,
-                    Version = 1
+                    Version = 1,
+                    Creator = "Tester"
                 },
                 new ApprovalStage()
                 {
                     Id = 3,
                     ApprovalType = ApprovalEngine.Enums.ApprovalType.StudentUser,
                     Name = "IT",
-                    StageOrder = 1,
+                    StageOrder = 3,
                     Permission = ApprovalEngine.Enums.Permission.IT,
                     DeclineToOrder = 2,
-                    Version = 1
+                    Version = 1,
+                    Creator = "Tester"
                 }
             };
 

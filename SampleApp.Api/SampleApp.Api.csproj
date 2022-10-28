@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SampleApp.Core\SampleApp.Core.csproj" />
+    <ProjectReference Include="..\SampleApp.Services\SampleApp.Services.csproj" />
   </ItemGroup>
 
 </Project>
