@@ -2,11 +2,7 @@
 using ApprovalEngine.Enums;
 using ApprovalEngine.Models;
 using SampleApp.Core.Data.Entities.ApprovalEngine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections;
 using UnitTests.ApprovalEngineTest.Mock;
 
 namespace UnitTests.ApprovalEngineTest
@@ -85,8 +81,7 @@ namespace UnitTests.ApprovalEngineTest
                     ApprovalRequestType = ApprovalType.StudentUser,
                     IsPending = true,
                 },
-                MockApprovalRepository.ApprovalRequests.Where(x => x.ApprovalType == ApprovalType.StudentUser && (x.Status == ApprovalStatus.Created || x.Status == ApprovalStatus.Pending
-                    || x.Status == ApprovalStatus.Declined)).ToList()
+                MockApprovalRepository.ApprovalRequests.Where(x => x.ApprovalType == ApprovalType.StudentUser && (x.Status == ApprovalStatus.Created || x.Status == ApprovalStatus.Pending)).ToList()
             };
             yield return new object[]
             {
@@ -207,7 +202,7 @@ namespace UnitTests.ApprovalEngineTest
             //Arrange
 
             //Act
-            var result = await _approvalService.ApproveRequest(new ApprovalModel(approvalRequestId, "HOD"));
+            var result = await _approvalService.ApproveRequest(new ApprovalModel(approvalRequestId, "HOD", "comment"));
 
             //Assert
             Assert.NotNull(result);
@@ -239,7 +234,7 @@ namespace UnitTests.ApprovalEngineTest
             Assert.Equal(expectedRequest.ApprovalType.ToString(), approvalRequestsResult.Data.ApprovalType);
 
             //1st Approval
-            var approvalResponse = await _approvalService.ApproveRequest(new ApprovalModel(approvalRequestId, "HOD"));
+            var approvalResponse = await _approvalService.ApproveRequest(new ApprovalModel(approvalRequestId, "HOD", "comment"));
             Assert.True(approvalResponse.Data);
             Assert.False(approvalResponse.HasError);
 
@@ -251,7 +246,7 @@ namespace UnitTests.ApprovalEngineTest
             Assert.Equal(expectedRequest.ApprovalType.ToString(), approvalRequestsResult.Data.ApprovalType);
 
             //2nd Approval
-            approvalResponse = await _approvalService.ApproveRequest(new ApprovalModel(approvalRequestId, "Admin"));
+            approvalResponse = await _approvalService.ApproveRequest(new ApprovalModel(approvalRequestId, "Admin", "comment"));
 
             Assert.True(approvalResponse.Data);
             Assert.False(approvalResponse.HasError);
@@ -264,7 +259,7 @@ namespace UnitTests.ApprovalEngineTest
             Assert.Equal(expectedRequest.ApprovalType.ToString(), approvalRequestsResult.Data.ApprovalType);
 
             //3rd Approval
-            approvalResponse = await _approvalService.ApproveRequest(new ApprovalModel(approvalRequestId, "IT"));
+            approvalResponse = await _approvalService.ApproveRequest(new ApprovalModel(approvalRequestId, "IT", "comment"));
 
             Assert.True(approvalResponse.Data);
             Assert.False(approvalResponse.HasError);
@@ -277,7 +272,7 @@ namespace UnitTests.ApprovalEngineTest
             Assert.Equal(expectedRequest.ApprovalType.ToString(), approvalRequestsResult.Data.ApprovalType);
 
             //4th Approval
-            approvalResponse = await _approvalService.ApproveRequest(new ApprovalModel(approvalRequestId, "Approver"));
+            approvalResponse = await _approvalService.ApproveRequest(new ApprovalModel(approvalRequestId, "Approver", "comment"));
 
             Assert.True(approvalResponse.Data);
             Assert.False(approvalResponse.HasError);
@@ -307,7 +302,7 @@ namespace UnitTests.ApprovalEngineTest
             Assert.Equal(expectedRequest.ApprovalType.ToString(), approvalRequestsResult.Data.ApprovalType);
 
             //1st Approval
-            var approvalResponse = await _approvalService.ApproveRequest(new ApprovalModel(approvalRequestId, "HOD" ));
+            var approvalResponse = await _approvalService.ApproveRequest(new ApprovalModel(approvalRequestId, "HOD" , "comment"));
             Assert.True(approvalResponse.Data);
             Assert.False(approvalResponse.HasError);
 
@@ -319,7 +314,7 @@ namespace UnitTests.ApprovalEngineTest
             Assert.Equal(expectedRequest.ApprovalType.ToString(), approvalRequestsResult.Data.ApprovalType);
 
             //Decline
-            approvalResponse = await _approvalService.DeclineRequest(new ApprovalModel(approvalRequestId, "Admin" ));
+            approvalResponse = await _approvalService.DeclineRequest(new ApprovalModel(approvalRequestId, "Admin" , "comment"));
             Assert.True(approvalResponse.Data);
             Assert.False(approvalResponse.HasError);
 
@@ -327,11 +322,11 @@ namespace UnitTests.ApprovalEngineTest
             approvalRequestsResult = await _approvalService.GetRequest(approvalRequestId);
             Assert.Equal("HOD", approvalRequestsResult.Data.Stage);
             Assert.Equal(1, approvalRequestsResult.Data.StatgeOrder);
-            Assert.Equal(ApprovalStatus.Declined.ToString(), approvalRequestsResult.Data.Status);
+            Assert.Equal(ApprovalStatus.Pending.ToString(), approvalRequestsResult.Data.Status);
             Assert.Equal(expectedRequest.ApprovalType.ToString(), approvalRequestsResult.Data.ApprovalType);
 
             //Decline
-            approvalResponse = await _approvalService.DeclineRequest(new ApprovalModel(approvalRequestId, "HOD" ));
+            approvalResponse = await _approvalService.DeclineRequest(new ApprovalModel(approvalRequestId, "HOD" , "comment"));
             Assert.True(approvalResponse.Data);
             Assert.False(approvalResponse.HasError);
 
@@ -359,7 +354,7 @@ namespace UnitTests.ApprovalEngineTest
             Assert.Equal(expectedRequest.ApprovalType.ToString(), approvalRequestsResult.Data.ApprovalType);
 
             //1st Approval
-            var approvalResponse = await _approvalService.ApproveRequest(new ApprovalModel(approvalRequestId, "HOD"));
+            var approvalResponse = await _approvalService.ApproveRequest(new ApprovalModel(approvalRequestId, "HOD", "comment"));
             Assert.True(approvalResponse.Data);
             Assert.False(approvalResponse.HasError);
 
@@ -371,7 +366,7 @@ namespace UnitTests.ApprovalEngineTest
             Assert.Equal(expectedRequest.ApprovalType.ToString(), approvalRequestsResult.Data.ApprovalType);
 
             //2nd Approval
-            approvalResponse = await _approvalService.ApproveRequest(new ApprovalModel(approvalRequestId, "Admin"));
+            approvalResponse = await _approvalService.ApproveRequest(new ApprovalModel(approvalRequestId, "Admin", "comment"));
 
             Assert.True(approvalResponse.Data);
             Assert.False(approvalResponse.HasError);
@@ -384,7 +379,7 @@ namespace UnitTests.ApprovalEngineTest
             Assert.Equal(expectedRequest.ApprovalType.ToString(), approvalRequestsResult.Data.ApprovalType);
 
             //Reject
-            approvalResponse = await _approvalService.RejectRequest(new ApprovalModel(approvalRequestId, "it" ));
+            approvalResponse = await _approvalService.RejectRequest(new ApprovalModel(approvalRequestId, "it" , "comment"));
             Assert.True(approvalResponse.Data);
             Assert.False(approvalResponse.HasError);
 
@@ -446,7 +441,6 @@ namespace UnitTests.ApprovalEngineTest
             //Arrange
             var request = new CreateApprovalStage(
                     ApprovalType.StudentUser,
-                    1,
                     MockApprovalStageRepository.ApprovalStages.Where(x => x.Version == 1)
                     .Select(s => new ApprovalStageModel(s.Permission, "HOD", s.StageOrder, s.DeclineToOrder))
                     .ToList()
@@ -466,7 +460,6 @@ namespace UnitTests.ApprovalEngineTest
             //Arrange
             var request = new CreateApprovalStage(
                     ApprovalType.StudentUser,
-                    1,
                     new List<ApprovalStageModel>
                     {
                         new ApprovalStageModel(Permission.HOD, "HOD", 1, 2),

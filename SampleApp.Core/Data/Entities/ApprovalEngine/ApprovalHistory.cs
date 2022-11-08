@@ -8,6 +8,7 @@ namespace SampleApp.Core.Data.Entities.ApprovalEngine
         public ActionType Action { get; set; }
         public string Stage { get; set; }
         public int StageOrder { get; set; }
+        public string? Comment { get; set; }
         public ApprovalRequest Request { get; set; }
     }
 }

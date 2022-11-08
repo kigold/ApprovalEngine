@@ -10,10 +10,10 @@ namespace ApprovalEngine
         private readonly IRepository<ApprovalRequest> _approvalRepository;
         private readonly IRepository<ApprovalStage> _approvalStageRepository;
         private readonly IRepository<ApprovalHistory> _approvalHistoryRepository;
-        public event Action<bool, string> OnApproval;
-        public event Action<bool, string> OnDecline;
-        public event Action<string> OnReject;
-        public event Action<string> OnReturn;
+        public event Func<bool, string, Task> OnApproval;
+        public event Func<bool, string, Task> OnDecline;
+        public event Func<string, Task> OnReject;
+        public event Func<string, Task> OnReturn;
 
         public ApprovalService(
             IRepository<ApprovalRequest> approvalRepository,
@@ -46,16 +46,23 @@ namespace ApprovalEngine
                 Stage = firstStage.Name,
                 StageOrder = firstStage.StageOrder,
                 Status = ApprovalStatus.Created,
-                Version = firstStage.Version
+                Version = firstStage.Version,
+                Creator = "Tester"
             };
 
             _approvalRepository.Insert(request);
+            await _approvalRepository.SaveChangesAsync();
 
             _approvalHistoryRepository.Insert(new ApprovalHistory
             {
                 Action = ActionType.Create,
                 ApprovalRequestId = request.Id,
+                Stage = "Created",
+                Created = DateTime.Now,
+                Creator = "Tester"
             });
+
+            await _approvalRepository.SaveChangesAsync();
 
             return new ResultModel<bool>(true, "Success");
         }
@@ -67,14 +74,25 @@ namespace ApprovalEngine
             if (request == null)
                 return new ResultModel<bool>($"Approval Request with Id {model.ApprovalRequestId} not found.");
 
-            if (!request.Stage.Equals(model.Stage, StringComparison.OrdinalIgnoreCase))
-                return new ResultModel<bool>($"Request stage does not match.");
-
             if (!IsPendingApprovalStatus(request.Status))
                 return new ResultModel<bool>($"Request is not pending approval");
 
+            if (!request.Stage.Equals(model.Stage, StringComparison.OrdinalIgnoreCase))
+                return new ResultModel<bool>($"Request stage does not match.");
+
+            _approvalHistoryRepository.Insert(new ApprovalHistory
+            {
+                Action = ActionType.Approve,
+                ApprovalRequestId = request.Id,
+                Stage = request.Stage,
+                StageOrder = request.StageOrder,
+                Comment = model.Comment,
+                Created = DateTime.Now,
+                Creator = "Tester"
+            });
+
             //Get Stages
-            var nextStage = _approvalStageRepository.Get(x => x.ApprovalType == request.ApprovalType,
+            var nextStage = _approvalStageRepository.Get(x => x.ApprovalType == request.ApprovalType && x.Version == request.Version,
                                                         o => o.OrderBy(x => x.StageOrder))
                                                     .FirstOrDefault(x => x.StageOrder > request.StageOrder);
 
@@ -90,13 +108,7 @@ namespace ApprovalEngine
                 request.Status = ApprovalStatus.Pending;
             }
 
-            _approvalHistoryRepository.Insert(new ApprovalHistory
-            {
-                Action = ActionType.Approve,
-                ApprovalRequestId = request.Id,
-                Stage = model.Stage,
-                StageOrder = request.StageOrder
-            });
+            await _approvalRepository.SaveChangesAsync();
 
             OnApproval?.Invoke(isLastStage, request.EntityId);
 
@@ -110,15 +122,25 @@ namespace ApprovalEngine
             if (request == null)
                 return new ResultModel<bool>($"Approval Request with Id {model.ApprovalRequestId} not found");
 
-            if (!request.Stage.Equals(model.Stage, StringComparison.OrdinalIgnoreCase))
-                return new ResultModel<bool>($"Request stage does not match.");
-
             if (!IsPendingApprovalStatus(request.Status))
                 return new ResultModel<bool>($"Request is not pending approval");
 
-            //Get Stages
-            var stages = _approvalStageRepository.Get(x => x.ApprovalType == request.ApprovalType);
+            if (!request.Stage.Equals(model.Stage, StringComparison.OrdinalIgnoreCase))
+                return new ResultModel<bool>($"Request stage does not match.");
 
+            _approvalHistoryRepository.Insert(new ApprovalHistory
+            {
+                Action = ActionType.Decline,
+                ApprovalRequestId = request.Id,
+                Stage = request.Stage,
+                StageOrder = request.StageOrder,
+                Comment = model.Comment,
+                Created = DateTime.Now,
+                Creator = "Tester"
+            });
+
+            //Get Stages
+            var stages = _approvalStageRepository.Get(x => x.ApprovalType == request.ApprovalType && x.Version == request.Version);
             var currentStage = stages.FirstOrDefault(x => x.StageOrder == request.StageOrder);
 
             if (currentStage == null)
@@ -132,18 +154,12 @@ namespace ApprovalEngine
             else
             {
                 var newStage = stages.FirstOrDefault(x => x.StageOrder == currentStage.DeclineToOrder);
-                request.Status = ApprovalStatus.Declined;
+                request.Status = ApprovalStatus.Pending;
                 request.Stage = newStage.Name;
                 request.StageOrder = newStage.StageOrder;
             }
 
-            _approvalHistoryRepository.Insert(new ApprovalHistory
-            {
-                Action = ActionType.Decline,
-                ApprovalRequestId = request.Id,
-                Stage = request.Stage,
-                StageOrder = request.StageOrder
-            });
+            await _approvalRepository.SaveChangesAsync();
 
             OnDecline?.Invoke(isFirstStage, request.EntityId);
 
@@ -157,11 +173,11 @@ namespace ApprovalEngine
             if (request == null)
                 return new ResultModel<bool>($"Approval Request with Id {model.ApprovalRequestId} not found");
 
-            if (!request.Stage.Equals(model.Stage, StringComparison.OrdinalIgnoreCase))
-                return new ResultModel<bool>($"Request stage does not match.");
-
             if (IsCompletedApprovalStatus(request.Status))
                 return new ResultModel<bool>($"Request is aleady completed.");
+
+            if (!request.Stage.Equals(model.Stage, StringComparison.OrdinalIgnoreCase))
+                return new ResultModel<bool>($"Request stage does not match.");
 
             request.Status = ApprovalStatus.Rejected;
 
@@ -170,8 +186,13 @@ namespace ApprovalEngine
                 Action = ActionType.Reject,
                 ApprovalRequestId = request.Id,
                 Stage = request.Stage,
-                StageOrder = request.StageOrder
+                StageOrder = request.StageOrder,
+                Comment = model.Comment,
+                Created = DateTime.Now,
+                Creator = "Tester"
             });
+
+            await _approvalRepository.SaveChangesAsync();
 
             OnReject?.Invoke(request.EntityId);
 
@@ -185,21 +206,26 @@ namespace ApprovalEngine
             if (request == null)
                 return new ResultModel<bool>($"Approval Request with Id {model.ApprovalRequestId} not found");
 
+            if (IsCompletedApprovalStatus(request.Status) || request.Status == ApprovalStatus.Returned)
+                return new ResultModel<bool>($"Request is aleady completed.");
+
             if (!request.Stage.Equals(model.Stage, StringComparison.OrdinalIgnoreCase))
                 return new ResultModel<bool>($"Request stage does not match.");
 
-            if (IsCompletedApprovalStatus(request.Status))
-                return new ResultModel<bool>($"Request is aleady completed.");
-
-            request.Status = ApprovalStatus.Rejected;
+            request.Status = ApprovalStatus.Returned;
 
             _approvalHistoryRepository.Insert(new ApprovalHistory
             {
                 Action = ActionType.Return,
                 ApprovalRequestId = request.Id,
                 Stage = request.Stage,
-                StageOrder = request.StageOrder
+                StageOrder = request.StageOrder,
+                Comment = model.Comment,
+                Created = DateTime.Now,
+                Creator = "Tester"
             });
+
+            await _approvalRepository.SaveChangesAsync();
 
             OnReturn?.Invoke(request.EntityId);
 
@@ -216,16 +242,25 @@ namespace ApprovalEngine
             if (request.Status != ApprovalStatus.Returned)
                 return new ResultModel<bool>($"Request is currently not returned.");
 
+            //Update Stage to first stage
+            var stage = _approvalStageRepository.Get(x => x.ApprovalType == request.ApprovalType && x.Version == request.Version,
+                                                        o => o.OrderBy(x => x.StageOrder))
+                                                    .FirstOrDefault();
+            request.Stage = stage.Name;
+            request.StageOrder = stage.StageOrder;
             request.Status = ApprovalStatus.Pending;
-            _approvalRepository.Update(request);
 
             _approvalHistoryRepository.Insert(new ApprovalHistory
             {
-                Action = ActionType.Pending,
+                Action = ActionType.UpdateToPending,
                 ApprovalRequestId = request.Id,
                 Stage = request.Stage,
-                StageOrder = request.StageOrder
+                StageOrder = request.StageOrder,
+                Created = DateTime.Now,
+                Creator = "Tester"
             });
+
+            await _approvalRepository.SaveChangesAsync();
 
             return new ResultModel<bool>(true, "Success");
         }
@@ -248,7 +283,6 @@ namespace ApprovalEngine
         {
             var queryable = _approvalRepository.Get();
 
-            //TODO Implement Filtering
             if (request.EntityId != null)
                 queryable = queryable.Where(x => x.EntityId == request.EntityId);
             if (request.ApprovalRequestType != null)
@@ -258,16 +292,11 @@ namespace ApprovalEngine
             if (request.IsReturned != null)
                 queryable = queryable.Where(x => x.Status == ApprovalStatus.Returned && request.IsReturned.Value);
 
-            //TODO impmement Paging
-            //var pagedData = await queryable.ToPagedListAsync(request.PageIndex, request.PageSize);
-
-            return new ResultModel<PagedList<ApprovalRequestResponse>>(new PagedList<ApprovalRequestResponse>(queryable.Select(x => (ApprovalRequestResponse)x).AsQueryable(), request.PageIndex, request.PageSize));
+            return new ResultModel<PagedList<ApprovalRequestResponse>>(new PagedList<ApprovalRequestResponse>(queryable.Select(x => (ApprovalRequestResponse)x), request.PageIndex, request.PageSize));
         }
 
         public async Task<ResultModel<PagedList<ApprovalRequestResponse>>> GetRequestsByPermission(GetApprovalsRequestByPermission request)
         {
-            var a = _approvalRepository.Get();
-            var b = _approvalStageRepository.Get();
             //TODO convert to raw sql query to avoid loading all data into memory
             var query = (from approval in _approvalRepository.Get()
                          join stage in _approvalStageRepository.Get().Where(x => x.Permission == request.Permission)
@@ -279,6 +308,7 @@ namespace ApprovalEngine
                          //    StageOrder = stage.StageOrder
                          //}
                          where approval.StageOrder == stage.StageOrder && approval.ApprovalType == stage.ApprovalType && approval.Version == stage.Version
+                            && (approval.Status == ApprovalStatus.Created || approval.Status == ApprovalStatus.Pending) //Pending
                          select new
                          {
                              approval,
@@ -307,6 +337,15 @@ namespace ApprovalEngine
             return new ResultModel<List<ApprovalStageResponse>>(result.Select(x => (ApprovalStageResponse)x).ToList());
         }
 
+        public async Task<ResultModel<List<ApprovalStageByVersion>>> GetAllApprovalStages(ApprovalType approvalRequestType)
+        {
+            var result = _approvalStageRepository.Get().Where(x => x.ApprovalType == approvalRequestType)
+                .ToList()
+                .GroupBy(x => x.Version);
+                
+            return new ResultModel<List<ApprovalStageByVersion>>(result.Select(x => new ApprovalStageByVersion(x.Key, x.Select(a => (ApprovalStageResponse)a))).ToList());
+        }
+
         public async Task<ResultModel<bool>> CreateRequestStages(CreateApprovalStage model)
         {
             var validation = ValidateCreateApprovalStage(model);
@@ -327,25 +366,31 @@ namespace ApprovalEngine
                     Name = stage.Stage,
                     Permission = stage.Permission,
                     StageOrder = stage.Order,
-                    Version = version
+                    Version = version,
+                    Creator = "Tester"
                 });
             }
+
+            await _approvalStageRepository.SaveChangesAsync();
 
             return new ResultModel<bool>(true, "Success");
         }
 
         public async Task<ResultModel<bool>> DeleteRequestStages(DeleteApprovalStages model)
         {
-            var approvalStages = _approvalStageRepository.Get().Where(x => x.ApprovalType == model.ApprovalType && x.Version == model.Version).ToList();
+            var approvalStages = _approvalStageRepository.Get().Where(x => x.ApprovalType == model.ApprovalRequestType && x.Version == model.Version).ToList();
             if (!approvalStages.Any())
                 return new ResultModel<bool>("Approval Stages not found");
 
             //Check for pending Approval request dependent on the approvalsStages
-            var hasPendingRequests = _approvalRepository.Get().Any(x => x.ApprovalType == model.ApprovalType && x.Version == model.Version && IsPendingApprovalStatus(x.Status));//TODO Optimize query;
+            var hasPendingRequests = _approvalRepository.Get().Any(x => x.ApprovalType == model.ApprovalRequestType && x.Version == model.Version &&
+                    (x.Status == ApprovalStatus.Created || x.Status == ApprovalStatus.Pending));//TODO Optimize query;
             if (hasPendingRequests)
                 return new ResultModel<bool>("The selected Approval Stages have pending approval requests and cannot be deleted");
 
             approvalStages.ForEach(x => _approvalStageRepository.Delete(x));
+
+            await _approvalStageRepository.SaveChangesAsync();
 
             return new ResultModel<bool>(true, "Success");
         }
@@ -377,7 +422,7 @@ namespace ApprovalEngine
 
         private static bool IsPendingApprovalStatus(ApprovalStatus status)
         {
-            if (status == ApprovalStatus.Created || status == ApprovalStatus.Pending || status == ApprovalStatus.Declined)
+            if (status == ApprovalStatus.Created || status == ApprovalStatus.Pending)
                 return true;
             return false;
         }

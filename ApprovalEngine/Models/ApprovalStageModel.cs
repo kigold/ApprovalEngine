@@ -13,7 +13,6 @@ namespace ApprovalEngine.Models
 
     public record CreateApprovalStage(
             ApprovalType ApprovalRequestType,
-            int Version,
             List<ApprovalStageModel> Stages
         );
 
@@ -44,4 +43,6 @@ namespace ApprovalEngine.Models
             };
         }
     }
+
+    public record ApprovalStageByVersion(int Version, IEnumerable<ApprovalStageResponse> Stages);
 }
