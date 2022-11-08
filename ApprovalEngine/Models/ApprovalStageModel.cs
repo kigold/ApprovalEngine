@@ -43,4 +43,6 @@ namespace ApprovalEngine.Models
             };
         }
     }
+
+    public record ApprovalStageByVersion(int Version, IEnumerable<ApprovalStageResponse> Stages);
 }

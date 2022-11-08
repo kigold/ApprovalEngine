@@ -337,6 +337,15 @@ namespace ApprovalEngine
             return new ResultModel<List<ApprovalStageResponse>>(result.Select(x => (ApprovalStageResponse)x).ToList());
         }
 
+        public async Task<ResultModel<List<ApprovalStageByVersion>>> GetAllApprovalStages(ApprovalType approvalRequestType)
+        {
+            var result = _approvalStageRepository.Get().Where(x => x.ApprovalType == approvalRequestType)
+                .ToList()
+                .GroupBy(x => x.Version);
+                
+            return new ResultModel<List<ApprovalStageByVersion>>(result.Select(x => new ApprovalStageByVersion(x.Key, x.Select(a => (ApprovalStageResponse)a))).ToList());
+        }
+
         public async Task<ResultModel<bool>> CreateRequestStages(CreateApprovalStage model)
         {
             var validation = ValidateCreateApprovalStage(model);

@@ -1,25 +1,22 @@
 ﻿using ApprovalEngine.Enums;
 using ApprovalEngine.Models;
+using SampleApp.Core.Models;
 
-namespace ApprovalEngine
+namespace SampleApp.Core.Services
 {
-    public interface IApprovalService
+    public interface IStudentService
     {
-        //Delegates
-        event Func<bool, string, Task> OnApproval;
-        event Func<bool, string, Task> OnDecline;
-        event Func<string, Task> OnReject;
-        event Func<string, Task> OnReturn;
+        Task<ResultModel<StudentResponse>> GetStudent(long id);
+        Task<ResultModel<PagedList<StudentResponse>>> GetAllStudents(PagedRequestModel request);
+        Task<ResultModel<bool>> CreateStudent(CreateStudentRequest model);
+        Task<ResultModel<bool>> UpdateStudent(UpdateStudentRequest model);
+        Task<ResultModel<bool>> DeleteStudent(long id);
 
-        //Action
-        Task<ResultModel<bool>> CreateApprovalRequest(CreateApprovalRequest model);
         Task<ResultModel<bool>> ApproveRequest(ApprovalModel model);
         Task<ResultModel<bool>> DeclineRequest(ApprovalModel model);
         Task<ResultModel<bool>> RejectRequest(ApprovalModel model);
-        /* Return back to the user for input */
-        Task<ResultModel<bool>> ReturnRequest(ApprovalModel model);
-        /* Update request back to pending after user input */
-        Task<ResultModel<bool>> UpdateRequestToPending(long approvalRequestId);
+        Task<ResultModel<bool>> ReturnRequest(ApprovalModel model); //Return back to the user for input
+        Task<ResultModel<bool>> UpdateRequestToPending(long approvalRequestId); //Update request back to pending after user input
 
         //Gets
         Task<ResultModel<ApprovalRequestResponse>> GetRequest(long approvalRequestId);
@@ -32,5 +29,6 @@ namespace ApprovalEngine
         Task<ResultModel<List<ApprovalStageByVersion>>> GetAllApprovalStages(ApprovalType approvalRequestType);
         Task<ResultModel<bool>> CreateRequestStages(CreateApprovalStage model);
         Task<ResultModel<bool>> DeleteRequestStages(DeleteApprovalStages model);
+
     }
 }
