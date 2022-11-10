@@ -1,5 +1,7 @@
 ﻿using ApprovalEngine.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OpenIddict.Validation.AspNetCore;
 using SampleApp.Core.Models;
 using SampleApp.Core.Services;
 
@@ -7,6 +9,7 @@ using SampleApp.Core.Services;
 
 namespace SampleApp.Api.Controllers
 {
+    //[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class StudentController : BaseController
