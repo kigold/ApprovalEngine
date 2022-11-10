@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEFDbContext(builder.Configuration);
-builder.Services.AddServices(builder.Configuration);
+builder.Services.AddServices();
 
 // Add services to the container.
 builder.Services.AddControllers()
@@ -17,6 +17,7 @@ builder.Services.AddControllers()
         options.SuppressInferBindingSourcesForParameters = true;
     });
 
+builder.Services.ConfigureAuthentication(builder.Configuration);
 builder.Services.AddAppSwagger();
 
 var app = builder.Build();
@@ -33,6 +34,9 @@ app.UseHttpsRedirection();
 
 app.UseRouting();
 app.UseStaticFiles();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseAppSwagger();
 

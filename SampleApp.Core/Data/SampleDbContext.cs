@@ -19,6 +19,10 @@ namespace SampleApp.Core.Data
 
         }
 
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<UserClaim> UserClaims { get; set; }
+        public DbSet<RoleClaim> RoleClaims { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<ApprovalRequest> ApprovalRequests { get; set; }
         public DbSet<ApprovalStage> ApprovalStages { get; set; }
@@ -27,6 +31,9 @@ namespace SampleApp.Core.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfigurationsFromAssembly(typeof(SampleDbContext).Assembly);
+
+
+            builder.UseOpenIddict<long>();
 
             SeedData(builder);
         }
@@ -48,7 +55,9 @@ namespace SampleApp.Core.Data
             optionsBuilder.UseSqlServer(connectionString);
         }
 
-        public void SeedData(ModelBuilder builder)
+
+
+        private void SeedData(ModelBuilder builder)
         {
             var stages = new List<ApprovalStage>()
             {
