@@ -14,4 +14,5 @@ namespace SampleApp.Core.Data.Entities
 
     public class RoleClaim : IdentityRoleClaim<long> { }
     public class UserClaim : IdentityUserClaim<long> { }
+    public class UserRole : IdentityUserRole<long> { }
 }
