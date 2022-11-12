@@ -148,7 +148,7 @@ namespace SampleApp.Api
                 options.Lockout.MaxFailedAccessAttempts = 3;
                 options.User.RequireUniqueEmail = false;
             })
-            .AddUserStore<UserStore<User, Role, SampleDbContext, long>>()
+            .AddUserStore<UserStore<User, Role, SampleDbContext, long, IdentityUserClaim<long>, UserRole, IdentityUserLogin<long>, IdentityUserToken<long>, RoleClaim>>()
             .AddSignInManager()
             .AddUserManager<UserManager<User>>()
             .AddEntityFrameworkStores<SampleDbContext>()

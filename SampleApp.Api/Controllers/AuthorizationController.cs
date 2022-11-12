@@ -20,12 +20,14 @@ namespace SampleApp.Api.Controllers
         private readonly IOpenIddictApplicationManager _applicationManager;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly RoleManager<Role> _roleManager;
 
-        public AuthorizationController(UserManager<User> userManager, SignInManager<User> signInManager, IOpenIddictApplicationManager applicationManager)
+        public AuthorizationController(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<Role> roleManager, IOpenIddictApplicationManager applicationManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _applicationManager = applicationManager;
+            _roleManager= roleManager;
         }
 
         [HttpPost("~/connect/token"), Produces("application/json")]
@@ -92,10 +94,10 @@ namespace SampleApp.Api.Controllers
                 identity.AddClaim(OpenIddictConstants.Claims.Username, user.UserName, OpenIddictConstants.Destinations.AccessToken);
                 // Add more claims if necessary
 
-                //foreach (var userRole in user.UserRoles)
-                //{
-                //    identity.AddClaim(OpenIddictConstants.Claims.Role, userRole.Role.NormalizedName, OpenIddictConstants.Destinations.AccessToken);
-                //}
+                foreach (var userRole in await _userManager.GetRolesAsync(user))
+                {
+                    identity.AddClaim(OpenIddictConstants.Claims.Role, userRole, OpenIddictConstants.Destinations.AccessToken);
+                }
 
                 var claimsPrincipal = new ClaimsPrincipal(identity);
                 claimsPrincipal.SetScopes(new string[]

@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using ApprovalEngine.Enums;
+using Microsoft.AspNetCore.Identity;
 using OpenIddict.Abstractions;
 using SampleApp.Core.Data;
 using SampleApp.Core.Data.Entities;
+using System.Security.Claims;
+using System.Xml.Linq;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace SampleApp.Api
@@ -22,6 +25,7 @@ namespace SampleApp.Api
 
             await SeedClients();
             await SeedUsers();
+            await SeedRoles();
         }
 
         public async Task SeedClients()
@@ -98,12 +102,13 @@ namespace SampleApp.Api
                 new User { Firstname = "Admin", Lastname = "Boss", Email = "admin@sample.com", UserName = "admin@sample.com" },
                 new User { Firstname = "Tester", Lastname = "Bae", Email = "tester@sample.com", UserName = "tester@sample.com" },
                 new User { Firstname = "IT", Lastname = "Guy", Email = "it@sample.com", UserName = "it@sample.com" },
+                new User { Firstname = "HOD", Lastname = "Oga", Email = "hod@sample.com", UserName = "hod@sample.com" },
             };
             using var scope = _serviceProvider.CreateScope();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
             foreach (var user in users)
             {
-                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-                if (userManager.FindByNameAsync(user.UserName).GetAwaiter().GetResult() is null)
+                if (await userManager.FindByNameAsync(user.UserName) is null)
                 {
                     var hash = userManager.PasswordHasher.HashPassword(user, "P@ssw0rd");
                     user.PasswordHash = hash;
@@ -112,6 +117,48 @@ namespace SampleApp.Api
             }
         }
 
+        public async Task SeedRoles()
+        {
+            var approver = new Role { Name = "Approver" };
+            var creator = new Role { Name = "Creator" };
+            var admin = new Role { Name = "Admin" };
+            var hod = new Role { Name = "HOD" };
+            var it = new Role { Name = "IT" };
+            using var scope = _serviceProvider.CreateScope();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
+
+            void AddRole(ref Role role)
+            {
+                var roleData = roleManager.FindByNameAsync(role.Name).GetAwaiter().GetResult();
+                if (roleData is not null)
+                {
+                    role = roleData;
+                    return;
+                }
+                roleManager.CreateAsync(role).GetAwaiter().GetResult();
+            }
+
+            AddRole(ref approver);
+            AddRole(ref creator);
+            AddRole(ref admin);
+            AddRole(ref hod);
+            AddRole(ref it);
+
+            await roleManager.AddClaimAsync(approver, new Claim(nameof(Permission), Permission.Approver.ToString()));
+            await roleManager.AddClaimAsync(admin, new Claim(nameof(Permission), Permission.Admin.ToString()));
+            await roleManager.AddClaimAsync(hod, new Claim(nameof(Permission), Permission.HOD.ToString()));
+            await roleManager.AddClaimAsync(it, new Claim(nameof(Permission), Permission.IT.ToString()));
+
+            var user = await userManager.FindByNameAsync("admin@sample.com");
+            await userManager.AddToRolesAsync(user, new[] { approver.Name, admin.Name } );
+            user = await userManager.FindByNameAsync("hod@sample.com");
+            await userManager.AddToRolesAsync(user, new[] { approver.Name, hod.Name });
+            user = await userManager.FindByNameAsync("it@sample.com");
+            await userManager.AddToRolesAsync(user, new[] { approver.Name, it.Name });
+            user = await userManager.FindByNameAsync("tester@sample.com");
+            await userManager.AddToRolesAsync(user, new[] { creator.Name });
+        }
 
         public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
     }

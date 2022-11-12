@@ -17,6 +17,7 @@ namespace SampleApp.Api.Controllers
         }
 
         [HttpPost]
+        [PermissionAttribute]
         [ProducesResponseType(typeof(ApiResponse<bool>), 200)]
         public async Task<IActionResult> ApproveRequest([FromBody] ApprovalModel model)
         {
@@ -24,6 +25,7 @@ namespace SampleApp.Api.Controllers
         }
 
         [HttpPost]
+        [PermissionAttribute]
         [ProducesResponseType(typeof(ApiResponse<bool>), 200)]
         public async Task<IActionResult> DeclineRequest([FromBody] ApprovalModel model)
         {
@@ -31,6 +33,7 @@ namespace SampleApp.Api.Controllers
         }
 
         [HttpPost]
+        [PermissionAttribute]
         [ProducesResponseType(typeof(ApiResponse<bool>), 200)]
         public async Task<IActionResult> RejectRequest([FromBody] ApprovalModel model)
         {
@@ -38,6 +41,7 @@ namespace SampleApp.Api.Controllers
         }
 
         [HttpPost]
+        [PermissionAttribute]
         [ProducesResponseType(typeof(ApiResponse<bool>), 200)]
         public async Task<IActionResult> ReturnRequest([FromBody] ApprovalModel model)
         {

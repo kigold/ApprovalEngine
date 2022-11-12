@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using SampleApp.Core.Data.Entities;
 using SampleApp.Core.Data.Entities.ApprovalEngine;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.AspNetCore.Identity;
 
 namespace SampleApp.Core.Data
 {
@@ -21,8 +22,9 @@ namespace SampleApp.Core.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<UserRole> UserRole { get; set; }
         public DbSet<UserClaim> UserClaims { get; set; }
-        public DbSet<RoleClaim> RoleClaims { get; set; }
+        public DbSet<IdentityRoleClaim<long>> RoleClaims { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<ApprovalRequest> ApprovalRequests { get; set; }
         public DbSet<ApprovalStage> ApprovalStages { get; set; }
@@ -34,6 +36,7 @@ namespace SampleApp.Core.Data
 
 
             builder.UseOpenIddict<long>();
+            builder.Entity<UserRole>().HasKey(x => new { x.UserId, x.RoleId });
 
             SeedData(builder);
         }
