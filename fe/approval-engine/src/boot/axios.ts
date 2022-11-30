@@ -31,7 +31,7 @@ api.interceptors.response.use(
       console.log('Axio Interceptor attempting token refresh');
       originalRequest._retry = true;
       const access_token = await AuthService.RefreshAccessToken();
-      axios.defaults.headers.common['Authorization'] = 'Bearer ' + access_token;
+      originalRequest.headers.Authorization = 'Bearer ' + access_token;
       return api(originalRequest);
     }
     return Promise.reject(error);
