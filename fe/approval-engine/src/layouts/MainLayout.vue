@@ -88,19 +88,15 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view @loggedin="afterLogin" />
+      <router-view
+        @loggedin="afterLogin"
+        @notify="notify($event.type, $event.message)"
+      />
     </q-page-container>
 
     <template>
       <div class="q-pa-md">
         <div class="row q-gutter-sm">
-          <q-btn
-            no-caps
-            unelevated
-            color="positive"
-            @click="triggerPositive"
-            label="Trigger 'positive'"
-          />
           <q-btn
             no-caps
             unelevated
@@ -111,25 +107,10 @@
           <q-btn
             no-caps
             unelevated
-            color="warning"
-            text-color="dark"
-            @click="triggerWarning"
-            label="Trigger 'warning'"
-          />
-          <q-btn
-            no-caps
-            unelevated
             color="info"
             @click="triggerInfo"
             label="Trigger 'info'"
-          />
-          <q-btn
-            no-caps
-            unelevated
-            color="grey-8"
-            @click="triggerOngoing"
-            label="Trigger 'ongoing'"
-          />
+          />]
         </div>
       </div>
     </template>
@@ -153,12 +134,32 @@ import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 
 const $q = useQuasar();
-function triggerNegative() {
+function triggerNegative(message: string) {
   console.log('Triggering Negative message');
   $q.notify({
-    type: 'Negative',
-    message: 'Shit happened',
+    type: 'negative',
+    message: `Shit happened ${message}`,
   });
+}
+
+function triggerInfo(message: string) {
+  console.log('Triggering Info message');
+  $q.notify({
+    type: 'info',
+    message: `Something cool: ${message}`,
+  });
+}
+
+function notify(type: string, message: string) {
+  console.log('NOTIFIYING', type, message);
+  switch (type) {
+    case 'info':
+      triggerInfo(message);
+      break;
+    case 'negative':
+      triggerNegative(message);
+      break;
+  }
 }
 
 const router = useRouter();

@@ -21,7 +21,7 @@ export const useAuthStore = defineStore('user', {
       this.user = null;
       this.loading = true;
       try {
-        const response = await AuthService.login(payload);
+        const response = await AuthService.Login(payload);
         if (!response.error) {
           this.token = response.access_token;
           this.user = JWT(response.access_token);

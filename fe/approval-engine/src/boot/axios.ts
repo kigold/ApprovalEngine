@@ -1,7 +1,6 @@
 import { boot } from 'quasar/wrappers';
 import axios, { AxiosInstance } from 'axios';
 import config from './../config';
-import { LoginResponseModel } from 'src/models/response.model';
 import AuthService from 'src/services/auth.service';
 
 declare module '@vue/runtime-core' {

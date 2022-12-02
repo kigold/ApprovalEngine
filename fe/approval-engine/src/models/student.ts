@@ -8,7 +8,7 @@ export interface Student {
   status: string;
 }
 
-export interface NewStudent {
+export interface CreateStudent {
   firstName: string;
   lastName: string;
   email: string;
