@@ -3,17 +3,21 @@ import ContainerComponent from '../components/ContainerComponent.vue';
 import { reactive } from 'vue';
 import { Login } from '../models/user';
 import { useAuthStore } from 'src/stores/auth.store';
+import { useRouter } from 'vue-router';
+
+const store = useAuthStore();
+const router = useRouter();
 
 const login: Login = reactive({
   username: '',
   password: '',
-  grant_type: 'password',
 });
+
+if (store.getUserProfile) router.push('/');
 
 const emit = defineEmits(['loggedin']);
 
 const submit = () => {
-  let store = useAuthStore();
   store
     .login(login)
     .then(() => {
@@ -21,31 +25,6 @@ const submit = () => {
     })
     .catch((e) => console.log(e));
 };
-
-// export default defineComponent({
-//   components: { ContainerComponent },
-//   name: 'LoginPage',
-//   setup() {
-//     const router = useRouter();
-
-//     const login: Login = reactive({
-//       username: '',
-//       password: '',
-//       grant_type: 'password',
-//     });
-
-//     const submit = () => {
-//       let store = useAuthStore();
-//       store
-//         .login(login)
-//         .then(() => {
-//           router.push('/');
-//         })
-//         .catch((e) => console.log(e));
-//     };
-//     return { login, submit };
-//   },
-// });
 </script>
 
 <template>
@@ -66,13 +45,6 @@ const submit = () => {
           v-model="login.password"
           label="Password"
           type="password"
-        />
-
-        <q-input
-          class="q-mt-sm"
-          outlined
-          v-model="login.grant_type"
-          label="Grant Type"
         />
 
         <div class="q-mt-md">

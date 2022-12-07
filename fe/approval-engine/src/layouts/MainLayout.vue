@@ -101,14 +101,14 @@
             no-caps
             unelevated
             color="negative"
-            @click="triggerNegative"
+            @click="triggerNegative('')"
             label="Trigger 'negative'"
           />
           <q-btn
             no-caps
             unelevated
             color="info"
-            @click="triggerInfo"
+            @click="triggerInfo('')"
             label="Trigger 'info'"
           />]
         </div>
@@ -132,6 +132,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
+import AuthService from 'src/services/auth.service';
 
 const $q = useQuasar();
 function triggerNegative(message: string) {
@@ -179,8 +180,7 @@ function afterLogin() {
 }
 
 function logout() {
-  localStorage.removeItem('user');
-  localStorage.removeItem('token');
+  AuthService.Logout();
   loggedInFlag.value = false;
   router.push('/login');
 }

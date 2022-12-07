@@ -67,8 +67,9 @@ export const useStudentStore = defineStore('student', {
         } else {
           this.error = response.errors.toString();
         }
-      } catch (error) {
+      } catch (error: any) {
         this.error = error as string;
+        Toast(error.message);
       } finally {
         this.loading = false;
       }

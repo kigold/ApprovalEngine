@@ -11,7 +11,7 @@ export default class AuthService {
     };
 
     const formPayload = new URLSearchParams();
-    formPayload.append('grant_type', payload.grant_type);
+    formPayload.append('grant_type', 'password');
     formPayload.append('password', payload.password);
     formPayload.append('username', payload.username);
 
@@ -24,30 +24,42 @@ export default class AuthService {
     ).data;
   }
 
+  static Logout() {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+  }
+
   static async RefreshAccessToken(): Promise<string> {
-    const refresh_token = localStorage.getItem('refresh_token');
+    try {
+      console.log('refreshing token ....');
+      const refresh_token = localStorage.getItem('refresh_token');
 
-    const requestOptions = {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    };
+      const requestOptions = {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      };
 
-    const formPayload = new URLSearchParams();
-    formPayload.append('grant_type', 'refresh_token');
-    formPayload.append('refresh_token', refresh_token as string);
+      const formPayload = new URLSearchParams();
+      formPayload.append('grant_type', 'refresh_token');
+      formPayload.append('refresh_token', refresh_token as string);
 
-    const response = (
-      await api.post<LoginResponseModel>(
-        '/connect/token',
-        formPayload,
-        requestOptions
-      )
-    ).data;
+      const response = (
+        await api.post<LoginResponseModel>(
+          '/connect/token',
+          formPayload,
+          requestOptions
+        )
+      ).data;
 
-    //localStorage.setItem('user', JSON.stringify(this.user));
-    localStorage.setItem('token', response.access_token);
-    localStorage.setItem('refresh_token', response.refresh_token);
-    return response.access_token;
+      //localStorage.setItem('user', JSON.stringify(this.user));
+      localStorage.setItem('token', response.access_token);
+      localStorage.setItem('refresh_token', response.refresh_token);
+      return response.access_token;
+    } catch (error: any) {
+      this.Logout();
+      window.location.reload();
+      throw error;
+    }
   }
 }

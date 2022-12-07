@@ -9,7 +9,7 @@
           :rows="students"
           :loading="loading"
           row-key="id"
-          v-model:pagination="pagy"
+          v-model:pagination="pagination"
           @request="request"
         >
         </q-table>
@@ -34,7 +34,7 @@ const props = defineProps({
 const tableRef = ref();
 
 let students = toRef(props, 'students');
-let pagy = toRef(props, 'pagination');
+let pagination = toRef(props, 'pagination');
 
 // watch(props, () => {
 //   pagy.value = props.pagination;
