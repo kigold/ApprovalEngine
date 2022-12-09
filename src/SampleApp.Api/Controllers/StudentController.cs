@@ -35,7 +35,7 @@ namespace SampleApp.Api.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(ApiResponse), 200)]
+        [ProducesResponseType(typeof(ApiResponse<bool>), 200)]
         public async Task<IActionResult> Post([FromBody] CreateStudentRequest model)
         {
             return await Process(() => _studentService.CreateStudent(model));

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OpenIddict.Validation.AspNetCore;
+using SampleApp.Core;
 using SampleApp.Core.Data;
 using SampleApp.Core.Data.Entities;
 using SampleApp.Core.Data.Entities.ApprovalEngine;
@@ -26,6 +27,8 @@ namespace SampleApp.Api
             services.AddTransient<IRepository<ApprovalStage>, Repository<ApprovalStage>>();
             services.AddScoped<IStudentService, StudentService>();
             services.AddScoped<IApprovalService, ApprovalService>();
+            services.AddScoped<IHttpUserService, HttpUserService>();
+            services.AddHttpContextAccessor();
         }
 
         public static void DatabaseSetup(this WebApplication app)
@@ -214,6 +217,7 @@ namespace SampleApp.Api
                     //options.AllowImplicitFlow();
                     options.AllowPasswordFlow();
                     options.AcceptAnonymousClients();
+                    options.AllowRefreshTokenFlow();
 
                     // Register the signing and encryption credentials.
                     options.AddDevelopmentEncryptionCertificate()

@@ -6,7 +6,7 @@ namespace ApprovalEngine.Models
     {
         public long ApprovalId { get; set; }
         public string Action { get; set; }
-        public string User { get; set; }
+        public string Creator { get; set; }
         public string Stage { get; set; }
         public int StageOrder { get; set; }
         public DateTime DateTime { get; set; }
@@ -21,7 +21,7 @@ namespace ApprovalEngine.Models
                 DateTime = model.Created,
                 Stage = model.Stage,
                 StageOrder = model.StageOrder,
-                User = model.Creator,
+                Creator = model.Creator.FullName,
                 Comment = model.Comment
             };
         }

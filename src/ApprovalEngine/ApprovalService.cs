@@ -1,5 +1,6 @@
 ﻿using ApprovalEngine.Enums;
 using ApprovalEngine.Models;
+using SampleApp.Core;
 using SampleApp.Core.Data.Entities.ApprovalEngine;
 using SampleApp.Core.Data.Repositories;
 
@@ -7,6 +8,7 @@ namespace ApprovalEngine
 {
     public class ApprovalService : IApprovalService
     {
+        private readonly IHttpUserService _httpUserService;
         private readonly IRepository<ApprovalRequest> _approvalRepository;
         private readonly IRepository<ApprovalStage> _approvalStageRepository;
         private readonly IRepository<ApprovalHistory> _approvalHistoryRepository;
@@ -18,11 +20,13 @@ namespace ApprovalEngine
         public ApprovalService(
             IRepository<ApprovalRequest> approvalRepository,
             IRepository<ApprovalStage> approvalStageRepository,
-            IRepository<ApprovalHistory> approvalHistoryRepository)
+            IRepository<ApprovalHistory> approvalHistoryRepository,
+            IHttpUserService httpUserService)
         {
             _approvalHistoryRepository = approvalHistoryRepository;
             _approvalRepository = approvalRepository;
             _approvalStageRepository = approvalStageRepository;
+            _httpUserService = httpUserService;
         }
 
         #region Action
@@ -42,12 +46,14 @@ namespace ApprovalEngine
             var request = new ApprovalRequest
             {
                 EntityId = model.EntityId,
+                Description = model.Description,
                 ApprovalType = model.ApprovalType,
                 Stage = firstStage.Name,
                 StageOrder = firstStage.StageOrder,
                 Status = ApprovalStatus.Created,
                 Version = firstStage.Version,
-                Creator = "Tester"
+                Created= DateTime.UtcNow,
+                CreatedBy = _httpUserService.GetCurrentUser().UserId
             };
 
             _approvalRepository.Insert(request);
@@ -59,7 +65,7 @@ namespace ApprovalEngine
                 ApprovalRequestId = request.Id,
                 Stage = "Created",
                 Created = DateTime.Now,
-                Creator = "Tester"
+                CreatedBy = _httpUserService.GetCurrentUser().UserId
             });
 
             await _approvalRepository.SaveChangesAsync();
@@ -88,7 +94,7 @@ namespace ApprovalEngine
                 StageOrder = request.StageOrder,
                 Comment = model.Comment,
                 Created = DateTime.Now,
-                Creator = "Tester"
+                CreatedBy = _httpUserService.GetCurrentUser().UserId
             });
 
             //Get Stages
@@ -136,7 +142,7 @@ namespace ApprovalEngine
                 StageOrder = request.StageOrder,
                 Comment = model.Comment,
                 Created = DateTime.Now,
-                Creator = "Tester"
+                CreatedBy = _httpUserService.GetCurrentUser().UserId
             });
 
             //Get Stages
@@ -189,7 +195,7 @@ namespace ApprovalEngine
                 StageOrder = request.StageOrder,
                 Comment = model.Comment,
                 Created = DateTime.Now,
-                Creator = "Tester"
+                CreatedBy = _httpUserService.GetCurrentUser().UserId
             });
 
             await _approvalRepository.SaveChangesAsync();
@@ -222,7 +228,7 @@ namespace ApprovalEngine
                 StageOrder = request.StageOrder,
                 Comment = model.Comment,
                 Created = DateTime.Now,
-                Creator = "Tester"
+                CreatedBy = _httpUserService.GetCurrentUser().UserId
             });
 
             await _approvalRepository.SaveChangesAsync();
@@ -257,7 +263,7 @@ namespace ApprovalEngine
                 Stage = request.Stage,
                 StageOrder = request.StageOrder,
                 Created = DateTime.Now,
-                Creator = "Tester"
+                CreatedBy = _httpUserService.GetCurrentUser().UserId
             });
 
             await _approvalRepository.SaveChangesAsync();
@@ -271,7 +277,8 @@ namespace ApprovalEngine
 
         public async Task<ResultModel<ApprovalRequestResponse>> GetRequest(long approvalRequestId)
         {
-            var request = _approvalRepository.GetByID(approvalRequestId);
+            //var request = _approvalRepository.GetByID(approvalRequestId);
+            var request = _approvalRepository.Get(x => x.Id == approvalRequestId, includeProperties: "Creator").FirstOrDefault();
 
             if (request == null)
                 return new ResultModel<ApprovalRequestResponse>("Request not found.");
@@ -281,16 +288,20 @@ namespace ApprovalEngine
 
         public async Task<ResultModel<PagedList<ApprovalRequestResponse>>> GetRequests(GetApprovalsRequest request)
         {
-            var queryable = _approvalRepository.Get();
+            var queryable = _approvalRepository.Get(includeProperties: "Creator");
 
             if (request.EntityId != null)
                 queryable = queryable.Where(x => x.EntityId == request.EntityId);
             if (request.ApprovalRequestType != null)
                 queryable = queryable.Where(x => x.ApprovalType == request.ApprovalRequestType);
             if (request.IsPending != null)
-                queryable = queryable.Where(x => FilterIsPendingRequest(x.Status, request.IsPending.Value));
-            if (request.IsReturned != null)
-                queryable = queryable.Where(x => x.Status == ApprovalStatus.Returned && request.IsReturned.Value);
+            {
+                queryable = queryable.Where(x => request.IsPending.Value ?
+                    x.Status == ApprovalStatus.Created || x.Status == ApprovalStatus.Pending :
+                    x.Status == ApprovalStatus.Approved || x.Status == ApprovalStatus.Rejected);
+            }
+            if (request.IsReturned != null && request.IsReturned.Value)
+                queryable = queryable.Where(x => x.Status == ApprovalStatus.Returned);
 
             return new ResultModel<PagedList<ApprovalRequestResponse>>(new PagedList<ApprovalRequestResponse>(queryable.Select(x => (ApprovalRequestResponse)x), request.PageIndex, request.PageSize));
         }
@@ -298,7 +309,7 @@ namespace ApprovalEngine
         public async Task<ResultModel<PagedList<ApprovalRequestResponse>>> GetRequestsByPermission(GetApprovalsRequestByPermission request)
         {
             //TODO convert to raw sql query to avoid loading all data into memory
-            var query = (from approval in _approvalRepository.Get()
+            var query = (from approval in _approvalRepository.Get(includeProperties: "Creator")
                          join stage in _approvalStageRepository.Get().Where(x => x.Permission == request.Permission)
                          on approval.ApprovalType equals stage.ApprovalType
                          //on new { RequestType = approval.RequestType, StageOrder = approval.StageOrder }
@@ -320,8 +331,10 @@ namespace ApprovalEngine
 
         public async Task<ResultModel<List<ApprovalHistoryResponse>>> GetRequestsHistory(long approvalRequestId)
         {
+            await Task.Delay(2000);
             var result = _approvalHistoryRepository.Get(x => x.ApprovalRequestId == approvalRequestId,
-                                                        x => x.OrderByDescending(o => o.Created));
+                                                        x => x.OrderByDescending(o => o.Created),
+                                                        includeProperties: "Creator");
 
             return new ResultModel<List<ApprovalHistoryResponse>>(result.Select(x => (ApprovalHistoryResponse)x).ToList(), "success");
         }
@@ -367,7 +380,7 @@ namespace ApprovalEngine
                     Permission = stage.Permission,
                     StageOrder = stage.Order,
                     Version = version,
-                    Creator = "Tester"
+                    CreatedBy = _httpUserService.GetCurrentUser().UserId
                 });
             }
 

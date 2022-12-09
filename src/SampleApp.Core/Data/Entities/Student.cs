@@ -11,5 +11,7 @@ namespace SampleApp.Core.Data.Entities
         public DateTime Created { get; set; }
         public DateTime? Modified { get; set; }
         public StudentStatus Status { get; set; }
+        public long CreatedBy { get; set; }
+        public User Creator { get; set; }
     }
 }
