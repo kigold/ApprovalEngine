@@ -1,7 +1,9 @@
 export interface User {
-  id: number;
-  firstName: string;
-  lastName: string;
+  sub: number;
+  //firstName: string;
+  //lastName: string;
+  username: PerformanceServerTiming;
+  name: string;
   email: string;
   roles: string[];
 }

@@ -84,6 +84,23 @@ export const useApprovalStore = defineStore('approval', {
       }
     },
 
+    async fetchApprovalHistoryAsync(id: number) {
+      this.loading = true;
+      try {
+        const response = await ApprovalService.GetRequestHistory(id);
+        if (!response.hasErrors) {
+          this.approvalHistory = response.payload;
+        } else {
+          this.error = response.errors.toString();
+        }
+      } catch (error: any) {
+        this.error = error.message as string;
+        Toast(error.message);
+      } finally {
+        this.loading = false;
+      }
+    },
+
     async createApprovalStageAsync(payload: CreateApprovalStage) {
       this.loading = true;
       try {

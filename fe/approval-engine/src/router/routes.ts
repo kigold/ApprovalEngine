@@ -28,7 +28,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'approval/:id',
-        component: () => import('pages/Approval/ApprovalPage.vue'),
+        component: () => import('src/pages/Approval/ApprovalModal.vue'),
       },
     ],
   },

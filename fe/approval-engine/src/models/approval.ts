@@ -12,7 +12,7 @@ export interface Approval {
 export interface ApprovalHistory {
   approvalId: number;
   action: string;
-  user: string;
+  creator: string;
   stage: string;
   stageOrder: number;
   dateTime: string;

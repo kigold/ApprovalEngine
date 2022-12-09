@@ -1,6 +1,7 @@
 import { api } from 'boot/axios';
 import {
   Approval,
+  ApprovalHistory,
   ApprovalModel,
   ApprovalStageByVersion,
   ApprovalStageResponse,
@@ -46,7 +47,7 @@ export default class ApprovalService {
 
   static async GetRequestHistory(id: number) {
     return (
-      await api.get<ResponseModel<Approval[]>>(
+      await api.get<ResponseModel<ApprovalHistory[]>>(
         `/api/Approval/GetRequestHistory/${id}`,
         {
           headers: RequestOptions(),

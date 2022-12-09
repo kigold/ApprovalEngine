@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { Login } from 'src/models/user';
+import { Login, User } from 'src/models/user';
 import AuthService from '../services/auth.service';
 import JWT from 'jwt-decode';
 import { Toast } from 'src/services/toast.helper';
@@ -7,21 +7,21 @@ import { Toast } from 'src/services/toast.helper';
 export const useAuthStore = defineStore('user', {
   state: () => ({
     users: [],
-    user: null,
+    user: {} as User,
     token: '',
     loading: false,
     error: '',
   }),
   getters: {
     getUserProfile: (state) => {
-      if (!state.user)
+      if (state.user)
         state.user = JSON.parse(localStorage.getItem('user') as string);
       return state.user;
     },
   },
   actions: {
     async login(payload: Login) {
-      this.user = null;
+      this.user = {} as User;
       this.loading = true;
       try {
         const response = await AuthService.Login(payload);
@@ -45,7 +45,7 @@ export const useAuthStore = defineStore('user', {
       }
     },
     logout() {
-      this.user = null;
+      this.user = {} as User;
       localStorage.removeItem('user');
     },
   },

@@ -15,6 +15,9 @@
           <q-btn round>
             <q-avatar size="42px">
               <img src="https://cdn.quasar.dev/img/avatar2.jpg" />
+              <q-tooltip>
+                {{ user }}
+              </q-tooltip>
             </q-avatar>
           </q-btn>
           <q-btn @click="logout" round color="primary" icon="directions">
@@ -133,6 +136,8 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import AuthService from 'src/services/auth.service';
+import { useAuthStore } from 'src/stores/auth.store';
+import { computed } from 'vue';
 
 const $q = useQuasar();
 function triggerNegative(message: string) {
@@ -164,8 +169,12 @@ function notify(type: string, message: string) {
 }
 
 const router = useRouter();
+const store = useAuthStore();
 const leftDrawerOpen = ref(false);
 const miniState = ref(true);
+const user = computed(() => {
+  return store.getUserProfile;
+});
 
 const loggedIn = localStorage.getItem('user') ? true : false;
 let loggedInFlag = ref(loggedIn);

@@ -59,6 +59,7 @@ onMounted(() => {
 });
 
 const handleRequest = (pagination: PaginationModel) => {
+  console.log('requesting', pagination.rowsPerPage, pagination);
   pageQuery.value.pageIndex = pagination.page as number;
   pageQuery.value.pageSize = pagination.rowsPerPage as number;
   store.fetchApprovalsAsync(pageQuery.value);

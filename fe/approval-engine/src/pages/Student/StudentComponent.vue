@@ -11,7 +11,7 @@
 
             <div class="col">
               <q-toggle
-                v-model="visibleColumnss"
+                v-model="visibleColumns"
                 val="calories"
                 label="Calories"
               />
@@ -50,4 +50,5 @@
 import { QPage, QTable, QSpace, QToggle, QBtn } from 'quasar';
 import { ref } from 'vue';
 
-const visibleColumns = null;
+const visibleColumns = ref(true);
+</script>
