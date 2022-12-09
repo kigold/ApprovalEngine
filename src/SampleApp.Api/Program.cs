@@ -43,3 +43,7 @@ app.UseAppSwagger();
 app.MapAppControllers();
 
 app.Run();
+//TODO
+// - Implement FE
+// - Add support for mysql and postgres
+// - add docker - compose to run FE and BE
