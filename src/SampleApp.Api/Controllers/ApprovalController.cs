@@ -92,7 +92,7 @@ namespace SampleApp.Api.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(ApiResponse<List<ApprovalStageResponse>>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<List<ApprovalStageByVersion>>), 200)]
         public async Task<IActionResult> GetAllApprovalStages([FromQuery] ApprovalType approvalRequestType)
         {
             return await Process(() => _studentService.GetAllApprovalStages(approvalRequestType));

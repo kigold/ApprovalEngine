@@ -1,6 +1,8 @@
 ﻿using ApprovalEngine;
 using ApprovalEngine.Enums;
 using ApprovalEngine.Models;
+using Moq;
+using SampleApp.Core;
 using SampleApp.Core.Data.Entities.ApprovalEngine;
 using System.Collections;
 using UnitTests.ApprovalEngineTest.Mock;
@@ -16,7 +18,8 @@ namespace UnitTests.ApprovalEngineTest
             _approvalService = new ApprovalService(
                     MockApprovalRepository.GetMock().Object,
                     MockApprovalStageRepository.GetMock().Object,
-                    MockApprovalHistoryRepository.GetMock().Object
+                    MockApprovalHistoryRepository.GetMock().Object,
+                    new Mock<IHttpUserService>().Object
                 );
         }
 
@@ -168,7 +171,7 @@ namespace UnitTests.ApprovalEngineTest
         public async Task GivenExisitingStage_CreateApprovalRequest_Successfully()
         {
             //Arrange
-            var request = new CreateApprovalRequest(ApprovalType.StudentUser,"1");
+            var request = new CreateApprovalRequest(ApprovalType.StudentUser,"1", "");
 
             //Act
             var result = await _approvalService.CreateApprovalRequest(request);
@@ -183,7 +186,7 @@ namespace UnitTests.ApprovalEngineTest
         public async Task GivenNoExisitingStage_CreateApprovalRequest_ReturnError()
         {
             //Arrange
-            var request = new CreateApprovalRequest(ApprovalType.Teacher, "1");
+            var request = new CreateApprovalRequest(ApprovalType.Teacher, "1", "");
 
             //Act
             var result = await _approvalService.CreateApprovalRequest(request);

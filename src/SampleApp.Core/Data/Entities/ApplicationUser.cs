@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SampleApp.Core.Data.Entities
 {
@@ -6,6 +7,8 @@ namespace SampleApp.Core.Data.Entities
     {
         public string Firstname { get; set; }
         public string Lastname { get; set; }
+        [NotMapped]
+        public string FullName => $"{Firstname} {Lastname}";
     }
 
     public class Role : IdentityRole<long>

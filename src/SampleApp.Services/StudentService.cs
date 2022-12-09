@@ -11,8 +11,10 @@ namespace SampleApp.Core.Services
     {
         private readonly IRepository<Student> _studentRepo;
         private readonly IApprovalService _approvalService;
-        public StudentService(IRepository<Student> studentRepo, IApprovalService approvalService)
+        private readonly IHttpUserService _httpUserService;
+        public StudentService(IRepository<Student> studentRepo, IApprovalService approvalService, IHttpUserService httpUserService)
         {
+            _httpUserService = httpUserService;
             _studentRepo =  studentRepo;
             _approvalService = approvalService;
             _approvalService.OnApproval += OnApproval;
@@ -29,12 +31,13 @@ namespace SampleApp.Core.Services
                 LastName = model.lastName,
                 Email = model.email,
                 Created = DateTime.Now,
-                Status = Enums.StudentStatus.PendingApproval
+                Status = Enums.StudentStatus.PendingApproval,
+                CreatedBy = _httpUserService.GetCurrentUser().UserId
             };
             _studentRepo.Insert(student);
             await _studentRepo.SaveChangesAsync();
 
-            var approvalRequestResponse = await _approvalService.CreateApprovalRequest(new CreateApprovalRequest(ApprovalEngine.Enums.ApprovalType.StudentUser, student.Id.ToString()));
+            var approvalRequestResponse = await _approvalService.CreateApprovalRequest(new CreateApprovalRequest(ApprovalType.StudentUser, student.Id.ToString(), $"{student.FirstName} {student.LastName} {student.Email}"));
             if (approvalRequestResponse.HasError)
                 return new ResultModel<bool>(approvalRequestResponse.ErrorMessages);
 

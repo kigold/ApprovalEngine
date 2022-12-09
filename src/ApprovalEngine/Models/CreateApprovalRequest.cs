@@ -2,5 +2,5 @@
 
 namespace ApprovalEngine.Models
 {
-    public record CreateApprovalRequest(ApprovalType ApprovalType, string EntityId);
+    public record CreateApprovalRequest(ApprovalType ApprovalType, string EntityId, string Description);
 }

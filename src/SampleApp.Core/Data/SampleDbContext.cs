@@ -37,6 +37,10 @@ namespace SampleApp.Core.Data
 
             builder.UseOpenIddict<long>();
             builder.Entity<UserRole>().HasKey(x => new { x.UserId, x.RoleId });
+            builder.Entity<Student>().HasOne(x => x.Creator).WithMany().HasForeignKey(u => u.CreatedBy).OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<ApprovalRequest>().HasOne(x => x.Creator).WithMany().HasForeignKey(u => u.CreatedBy).OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<ApprovalHistory>().HasOne(x => x.Creator).WithMany().HasForeignKey(u => u.CreatedBy).OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<ApprovalStage>().HasOne(x => x.Creator).WithMany().HasForeignKey(u => u.CreatedBy).OnDelete(DeleteBehavior.NoAction);
 
             SeedData(builder);
         }
@@ -73,7 +77,6 @@ namespace SampleApp.Core.Data
                     Permission = ApprovalEngine.Enums.Permission.HOD,
                     DeclineToOrder = 1,
                     Version = 1,
-                    Creator = "Tester"
                 },
                 new ApprovalStage()
                 {
@@ -84,7 +87,6 @@ namespace SampleApp.Core.Data
                     Permission = ApprovalEngine.Enums.Permission.Admin,
                     DeclineToOrder = 1,
                     Version = 1,
-                    Creator = "Tester"
                 },
                 new ApprovalStage()
                 {
@@ -95,7 +97,6 @@ namespace SampleApp.Core.Data
                     Permission = ApprovalEngine.Enums.Permission.IT,
                     DeclineToOrder = 2,
                     Version = 1,
-                    Creator = "Tester"
                 }
             };
 

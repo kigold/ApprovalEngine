@@ -5,6 +5,7 @@ namespace SampleApp.Core.Data.Entities.ApprovalEngine
     public class ApprovalRequest : Entity
     {
         public string EntityId { get; set; }
+        public string Description { get; set; }
         public ApprovalType ApprovalType { get; set; }
         public int StageOrder { get; set; }
         public string Stage { get; set; }
