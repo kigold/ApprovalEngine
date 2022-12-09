@@ -35,6 +35,17 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseStaticFiles();
 
+app.UseCors(x =>
+{
+    //x.WithOrigins("http://localhost:8080")
+    x.AllowAnyOrigin()
+             .AllowAnyMethod()
+             .AllowAnyHeader();
+             //.AllowCredentials();
+});
+
+//app.UseCors(x => x.AllowAnyOrigin());
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -47,3 +58,5 @@ app.Run();
 // - Implement FE
 // - Add support for mysql and postgres
 // - add docker - compose to run FE and BE
+// - Add EntityDescription to Approval
+// - Add Integration test to test approval properly
