@@ -21,6 +21,7 @@ export interface ApprovalHistory {
 
 export interface GetApprovalsQuery {
   entityId?: string;
+  stage?: string;
   ApprovalRequestType: ApprovalType;
   isPending?: boolean;
   isReturned?: boolean;

@@ -47,6 +47,13 @@
                 label="Entity Id"
                 dense
               />
+              <q-input
+                class="row"
+                outlined
+                v-model="pageQuery.stage"
+                label="Stage"
+                dense
+              />
               <q-btn
                 @click="query"
                 flat
@@ -83,13 +90,10 @@ import {
   QToggle,
 } from 'quasar';
 import { Approval } from 'src/models/approval';
-import { PropType, reactive, ref, toRef } from 'vue';
+import { PropType, ref, toRef } from 'vue';
 import { GetApprovalsQuery } from 'src/models/approval';
 import ContainerComponent from 'src/components/ContainerComponent.vue';
-import { useRouter } from 'vue-router';
 import ApprovalModal from './ApprovalModal.vue';
-
-const router = useRouter();
 
 const props = defineProps({
   approvals: { type: Object as PropType<Approval[]>, required: true },

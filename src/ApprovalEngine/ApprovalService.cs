@@ -302,6 +302,8 @@ namespace ApprovalEngine
             }
             if (request.IsReturned != null && request.IsReturned.Value)
                 queryable = queryable.Where(x => x.Status == ApprovalStatus.Returned);
+            if ( !string.IsNullOrEmpty(request.Stage))
+                queryable = queryable.Where(x => x.Stage.ToLower() == request.Stage.ToLower());
 
             return new ResultModel<PagedList<ApprovalRequestResponse>>(new PagedList<ApprovalRequestResponse>(queryable.Select(x => (ApprovalRequestResponse)x), request.PageIndex, request.PageSize));
         }
