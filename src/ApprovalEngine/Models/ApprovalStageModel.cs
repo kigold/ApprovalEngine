@@ -45,4 +45,6 @@ namespace ApprovalEngine.Models
     }
 
     public record ApprovalStageByVersion(int Version, IEnumerable<ApprovalStageResponse> Stages);
+
+    public record ApprovalTypeResponse(string Name, int VersionCount);
 }

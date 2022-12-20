@@ -85,6 +85,13 @@ namespace SampleApp.Api.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(ApiResponse<List<string>>), 200)]
+        public async Task<IActionResult> GetAllApprovalTypes([FromQuery] ApprovalType approvalRequestType)
+        {
+            return await Process(() => _studentService.GetAllApprovalType());
+        }
+
+        [HttpGet]
         [ProducesResponseType(typeof(ApiResponse<List<ApprovalStageResponse>>), 200)]
         public async Task<IActionResult> GetApprovalStages([FromQuery] GetApprovalStageRequest model)
         {
@@ -105,7 +112,7 @@ namespace SampleApp.Api.Controllers
             return await Process(() => _studentService.CreateRequestStages(model));
         }
 
-        [HttpPost]
+        [HttpDelete]
         [ProducesResponseType(typeof(ApiResponse<bool>), 200)]
         public async Task<IActionResult> DeleteRequestStages([FromBody] DeleteApprovalStages model)
         {

@@ -117,6 +117,11 @@ namespace SampleApp.Core.Services
             return _approvalService.GetRequestsByPermission(request);
         }
 
+        public Task<ResultModel<List<ApprovalTypeResponse>>> GetAllApprovalType()
+        {
+            return _approvalService.GetAllApprovalTypes();
+        }
+
         public Task<ResultModel<List<ApprovalStageResponse>>> GetApprovalStages(GetApprovalStageRequest model)
         {
             return _approvalService.GetApprovalStages(model);

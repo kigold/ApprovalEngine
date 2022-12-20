@@ -333,7 +333,6 @@ namespace ApprovalEngine
 
         public async Task<ResultModel<List<ApprovalHistoryResponse>>> GetRequestsHistory(long approvalRequestId)
         {
-            await Task.Delay(2000);
             var result = _approvalHistoryRepository.Get(x => x.ApprovalRequestId == approvalRequestId,
                                                         x => x.OrderByDescending(o => o.Created),
                                                         includeProperties: "Creator");
@@ -344,6 +343,22 @@ namespace ApprovalEngine
         #endregion
 
         #region Admin
+
+        public async Task<ResultModel<List<ApprovalTypeResponse>>> GetAllApprovalTypes()
+        {
+            var query = _approvalStageRepository.Get()
+                .ToList()
+                .GroupBy(x => x.ApprovalType);
+
+            var result = new List<ApprovalTypeResponse>();
+            foreach(var approvalType in query)
+            {
+                var group = approvalType.GroupBy(x => x.Version);
+                result.Add(new ApprovalTypeResponse(approvalType.Key.ToString(), group.Count()));
+            }
+             
+            return new ResultModel<List<ApprovalTypeResponse>>(result);
+        }
 
         public async Task<ResultModel<List<ApprovalStageResponse>>> GetApprovalStages(GetApprovalStageRequest model)
         {
