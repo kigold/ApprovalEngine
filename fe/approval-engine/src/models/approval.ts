@@ -35,6 +35,11 @@ export interface ApprovalModel {
   comment: string;
 }
 
+export interface ApprovalTypeResponse {
+  name: string;
+  versionCount: number;
+}
+
 export interface GetApprovalStageRequest {
   version: number;
   approvalRequestType: ApprovalType;
@@ -54,9 +59,9 @@ export interface ApprovalStageByVersion {
   stages: ApprovalStageResponse[];
 }
 
-export interface CreateApprovalStage {
+export interface CreateApprovalStages {
   approvalRequestType: ApprovalType;
-  stages: ApprovalStageModel;
+  stages?: ApprovalStageModel[];
 }
 
 export interface DeleteApprovalStages {
@@ -78,8 +83,12 @@ export enum Permission {
   IT,
 }
 
+export type PermissionStrings = keyof typeof Permission;
+
 export enum ApprovalType {
   StudentUser,
   AdminUser,
   Teacher,
 }
+
+export type ApprovalTypeStrings = keyof typeof ApprovalType;

@@ -30,6 +30,7 @@
         <q-route-tab to="/student" label="Students" />
         <q-route-tab to="/student/create" label="New Student" />
         <q-route-tab to="/approval" label="Approvals" />
+        <q-route-tab to="/admin" label="Admin" />
       </q-tabs>
     </q-header>
 
@@ -68,7 +69,7 @@
           v-ripple
         >
           <q-item-section avatar>
-            <q-icon name="dashboard" />
+            <q-icon name="people" />
           </q-item-section>
 
           <q-item-section> Students </q-item-section>
@@ -87,6 +88,33 @@
 
           <q-item-section> Approvals </q-item-section>
         </q-item>
+        <q-expansion-item
+          active-class="tab-active"
+          to="/admin"
+          exact
+          class="q-ma-none navigation-item"
+          clickable
+          v-ripple
+          icon="admin_panel_settings"
+          label="Admin"
+        >
+          <q-list class="q-pl-lg">
+            <q-item
+              active-class="tab-active"
+              to="/admin/stage"
+              exact
+              class="q-ma-none navigation-item"
+              clickable
+              v-ripple
+            >
+              <q-item-section avatar>
+                <q-icon name="stage" />
+              </q-item-section>
+
+              <q-item-section> Stages </q-item-section>
+            </q-item>
+          </q-list>
+        </q-expansion-item>
       </q-list>
     </q-drawer>
 

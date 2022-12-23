@@ -111,15 +111,12 @@ const props = defineProps({
   card: Boolean,
   loading: Boolean,
 });
-
 const emit = defineEmits(['toggleCard', 'refreshApprovals']);
-
 const store = useApprovalStore();
-
-let card = toRef(props, 'card');
+const card = toRef(props, 'card');
 const approval = toRef(props, 'approval');
 const loading = ref(false);
-let expanded = ref(false);
+const expanded = ref(false);
 const approvalHistory = computed(() => {
   return store.getApprovalHistory;
 });
@@ -163,7 +160,6 @@ const reject = () => {
 };
 const closeApprovalModal = () => {
   console.log('closing card');
-  card.value = false;
   expanded.value = false;
   hasApprovalHistory.value = false;
   emit('toggleCard');
