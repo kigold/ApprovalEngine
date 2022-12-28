@@ -3,13 +3,34 @@
     <q-card class="my-card" flat bordered>
       <q-card-section>
         <div class="text-overline text-orange-9">Approval</div>
-        <div class="text-h7 q-mt-sm q-mb-xs">Id: {{ approval.requestId }}</div>
-        <div class="text-h7 q-mt-sm q-mb-xs">Stage: {{ approval.stage }}</div>
-        <div class="text-h7 q-mt-sm q-mb-xs">Status: {{ approval.status }}</div>
-        <div class="text-caption text-grey">
-          {{ approval.description }}
-        </div>
-        <q-separator />
+        <q-field label="Id" stack-label dense>
+          <template v-slot:control>
+            <div class="self-center full-width" tabindex="0">
+              {{ approval.requestId }}
+            </div>
+          </template>
+        </q-field>
+        <q-field label="Stage" stack-label dense>
+          <template v-slot:control>
+            <div class="self-center full-width" tabindex="0">
+              {{ approval.stage }}
+            </div>
+          </template>
+        </q-field>
+        <q-field label="Status" stack-label dense>
+          <template v-slot:control>
+            <div class="self-center full-width" tabindex="0">
+              {{ approval.status }}
+            </div>
+          </template>
+        </q-field>
+        <q-field label="Description" stack-label dense>
+          <template v-slot:control>
+            <div class="self-center full-width" tabindex="0">
+              {{ approval.description }}
+            </div>
+          </template>
+        </q-field>
         <q-input
           ref="inputRef"
           outlined
