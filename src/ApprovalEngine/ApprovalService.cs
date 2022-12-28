@@ -391,7 +391,7 @@ namespace ApprovalEngine
             {
                 _approvalStageRepository.Insert(new ApprovalStage
                 {
-                    ApprovalType = model.ApprovalRequestType,
+                    ApprovalType = model.ApprovalRequestType.Value,
                     DeclineToOrder = stage.DeclineToOrder,
                     Name = stage.Stage,
                     Permission = stage.Permission,
