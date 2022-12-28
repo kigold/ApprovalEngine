@@ -52,7 +52,7 @@ export const useApprovalStagesStore = defineStore('approvalStages', {
           HandleError(response.errors.toString(), this.error);
         }
       } catch (error: any) {
-        HandleError(error.messag, this.error);
+        HandleError(error.message, this.error);
       } finally {
         this.loading = false;
       }
@@ -62,18 +62,14 @@ export const useApprovalStagesStore = defineStore('approvalStages', {
       this.loading = true;
       try {
         const response = await ApprovalService.GetAllApprovalStages(payload);
-        console.log('api response', response.payload);
         if (!response.hasErrors) {
           this.allStages[`${payload}`] = response.payload;
           this.stages = this.allStages[payload];
-          const cc = response.payload;
-
-          console.log('stage response', cc);
         } else {
           HandleError(response.errors.toString(), this.error);
         }
       } catch (error: any) {
-        HandleError(error.messag, this.error);
+        HandleError(error.message, this.error);
       } finally {
         this.loading = false;
       }
@@ -88,7 +84,7 @@ export const useApprovalStagesStore = defineStore('approvalStages', {
           HandleError(response.errors.toString(), this.error);
         }
       } catch (error: any) {
-        HandleError(error.messag, this.error);
+        HandleError(error.message, this.error);
       } finally {
         this.loading = false;
       }
@@ -102,7 +98,7 @@ export const useApprovalStagesStore = defineStore('approvalStages', {
           HandleError(response.errors.toString(), this.error);
         }
       } catch (error: any) {
-        HandleError(error.messag, this.error);
+        HandleError(error.message, this.error);
       } finally {
         this.loading = false;
       }

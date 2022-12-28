@@ -1,7 +1,7 @@
 <template>
   <ApprovalStagesModal
-    :dialog="stageDialog"
-    :maximized-toggle="stageDialogMaximize"
+    :dialog="createStageDialog"
+    :is-new-approval-stages="isNewApprovalStages"
     :version="approvalVersion"
     :selectApprovalType="selectApprovalType"
     @toggle="toggleDialog"
@@ -10,22 +10,14 @@
   <q-page padding>
     <div class="q-pa-md" style="max-width: 800px">
       <div class="row">
-        <div class="col-5 q-table__title">Approval Types</div>
-        <q-select
-          dense
-          filled
-          class="col-5"
-          v-model="selectApprovalType"
-          :options="approvalTypeOptions"
-          label="Approval Type"
-        />
+        <div class="col-9 q-table__title">Approval Types</div>
         <q-btn
           size="sm"
           @click="createApprovalVersion(selectApprovalType, 1, true)"
           flat
-          class="col-2 square"
+          class="col-3 square"
           icon="add"
-          label="Create"
+          label="Create New Stages"
         />
       </div>
       <q-list bordered separator>
@@ -160,13 +152,13 @@ const loading = computed(() => {
 const approvalStages = ref<ApprovalStageByVersion[]>(
   [] as ApprovalStageByVersion[]
 );
-let stageDialog = ref(false);
-let stageDialogMaximize = ref(false);
+let createStageDialog = ref(false);
+let isNewApprovalStages = ref(false);
+let selectApprovalType = ref<string>('');
 
 const toggleDialog = () => {
-  stageDialog.value = !stageDialog.value;
+  createStageDialog.value = !createStageDialog.value;
 };
-let selectApprovalType = ref<string>('');
 
 // const createApprovalVersion = (approvalType: string, version: number) => {
 //   console.log('Creating Item', approvalType, version);
@@ -176,20 +168,18 @@ let selectApprovalType = ref<string>('');
 const createApprovalVersion = (
   approvalType: string,
   version: number,
-  newApprovalType = false
+  newStages = false
 ) => {
-  if (newApprovalType) {
+  if (newStages) {
     approvalVersion.value = {
       version: version,
       stages: [] as ApprovalStageResponse[],
     } as ApprovalStageByVersion;
-    stageDialog.value = true;
+    createStageDialog.value = true;
+    isNewApprovalStages.value = true;
     return;
   }
 
-  console.log('Editing Item', approvalType, version);
-  // approvalVersion.value =
-  //   approvalStages.value.filter((x) => x.version === version)[0];
   ///clone here
   const item = approvalStages.value.filter((x) => x.version === version)[0];
   approvalVersion.value = {
@@ -203,20 +193,20 @@ const createApprovalVersion = (
       version: x.version,
     })),
   };
-
-  stageDialog.value = true;
+  isNewApprovalStages.value = false;
+  createStageDialog.value = true;
 };
 
-const deleteApprovalVersion = (approvalType: string, version: number) => {
+const deleteApprovalVersion = async (approvalType: string, version: number) => {
   console.log('Deleting Item', approvalType, version);
   let payload: DeleteApprovalStages = {
     approvalRequestType:
       ApprovalType[approvalType as keyof typeof ApprovalType],
     version: version,
   };
-  store.DeleteApprovalStagesAsync(payload);
+  await store.DeleteApprovalStagesAsync(payload);
 
-  refresh(approvalType);
+  await refresh(approvalType);
 };
 
 const getApprovalTypeStages = async (approvalType: string) => {
@@ -235,9 +225,11 @@ onMounted(async () => {
 const refresh = async (approvalType: string) => {
   console.log('refreshing for ', approvalType);
   const approvalTypeEnum: ApprovalType = <ApprovalType>(<unknown>approvalType);
-  await store.fetchAllApprovalTypesAsync();
+  //await store.fetchAllApprovalTypesAsync();
   await store.fetchApprovalStagesAsync(approvalTypeEnum);
+  await store.fetchAllApprovalTypesAsync();
   approvalStages.value = store.getApprovalStage(approvalType);
+  console.log('refreshed', approvalStages.value);
 };
 
 const stagesColumns: QTableProps['columns'] = [
@@ -266,6 +258,4 @@ const stagesColumns: QTableProps['columns'] = [
     field: 'declineToOrder',
   },
 ];
-
-const approvalTypeOptions = ['StudentUser', 'Teacher', 'AdminUser'];
 </script>
