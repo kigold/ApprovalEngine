@@ -25,6 +25,7 @@ namespace SampleApp.Core.Services
         Task<ResultModel<List<ApprovalHistoryResponse>>> GetRequestsHistory(long approvalRequestId);
 
         //Admin
+        Task<ResultModel<List<ApprovalTypeResponse>>> GetAllApprovalType();
         Task<ResultModel<List<ApprovalStageResponse>>> GetApprovalStages(GetApprovalStageRequest model);
         Task<ResultModel<List<ApprovalStageByVersion>>> GetAllApprovalStages(ApprovalType approvalRequestType);
         Task<ResultModel<bool>> CreateRequestStages(CreateApprovalStage model);

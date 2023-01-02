@@ -21,6 +21,7 @@ export interface ApprovalHistory {
 
 export interface GetApprovalsQuery {
   entityId?: string;
+  stage?: string;
   ApprovalRequestType: ApprovalType;
   isPending?: boolean;
   isReturned?: boolean;
@@ -32,6 +33,11 @@ export interface ApprovalModel {
   approvalRequestId: number;
   stage: string;
   comment: string;
+}
+
+export interface ApprovalTypeResponse {
+  name: string;
+  versionCount: number;
 }
 
 export interface GetApprovalStageRequest {
@@ -53,9 +59,9 @@ export interface ApprovalStageByVersion {
   stages: ApprovalStageResponse[];
 }
 
-export interface CreateApprovalStage {
+export interface CreateApprovalStages {
   approvalRequestType: ApprovalType;
-  stages: ApprovalStageModel;
+  stages?: ApprovalStageModel[];
 }
 
 export interface DeleteApprovalStages {
@@ -77,8 +83,12 @@ export enum Permission {
   IT,
 }
 
+export type PermissionStrings = keyof typeof Permission;
+
 export enum ApprovalType {
   StudentUser,
   AdminUser,
   Teacher,
 }
+
+export type ApprovalTypeStrings = keyof typeof ApprovalType;

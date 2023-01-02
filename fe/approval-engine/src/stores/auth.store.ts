@@ -6,7 +6,7 @@ import { Toast } from 'src/services/toast.helper';
 
 export const useAuthStore = defineStore('user', {
   state: () => ({
-    users: [],
+    users: [] as User[],
     user: {} as User,
     token: '',
     loading: false,
@@ -21,6 +21,7 @@ export const useAuthStore = defineStore('user', {
   },
   actions: {
     async login(payload: Login) {
+      this.users = [this.user];
       this.user = {} as User;
       this.loading = true;
       try {

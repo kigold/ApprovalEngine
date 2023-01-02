@@ -19,16 +19,20 @@ const routes: RouteRecordRaw[] = [
         component: () => import('src/pages/Student/StudentCreate.vue'),
       },
       {
-        path: 'student/:id',
-        component: () => import('pages/Student/StudentComponent.vue'),
-      },
-      {
         path: 'approval',
         component: () => import('pages/Approval/ApprovalPage.vue'),
       },
       {
         path: 'approval/:id',
         component: () => import('src/pages/Approval/ApprovalModal.vue'),
+      },
+      {
+        path: 'admin',
+        component: () => import('pages/Admin/AdminDashboard.vue'),
+      },
+      {
+        path: 'admin/stage',
+        component: () => import('pages/Admin/AdminPage.vue'),
       },
     ],
   },

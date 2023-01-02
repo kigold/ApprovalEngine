@@ -6,7 +6,8 @@ import {
   ApprovalStageByVersion,
   ApprovalStageResponse,
   ApprovalType,
-  CreateApprovalStage,
+  ApprovalTypeResponse,
+  CreateApprovalStages,
   DeleteApprovalStages,
   GetApprovalsQuery,
   GetApprovalStageRequest,
@@ -116,6 +117,17 @@ export default class ApprovalService {
   }
 
   //Admin endpoints
+  static async GetAllApprovalTypes() {
+    return (
+      await api.get<ResponseModel<ApprovalTypeResponse[]>>(
+        '/api/Approval/GetAllApprovalTypes',
+        {
+          headers: RequestOptions(),
+        }
+      )
+    ).data;
+  }
+
   static async GetApprovalStages(payload: GetApprovalStageRequest) {
     return (
       await api.get<ResponseModel<ApprovalStageResponse[]>>(
@@ -133,17 +145,17 @@ export default class ApprovalService {
       await api.get<ResponseModel<ApprovalStageByVersion[]>>(
         '/api/Approval/GetAllApprovalStages',
         {
-          params: { payload },
+          params: { ApprovalRequestType: payload },
           headers: RequestOptions(),
         }
       )
     ).data;
   }
 
-  static async CreateApprovalStage(payload: CreateApprovalStage) {
+  static async CreateApprovalStage(payload: CreateApprovalStages) {
     return (
       await api.post<ResponseModel<boolean>>(
-        '/api/Approval/CreateApprovalStages',
+        '/api/Approval/CreateRequestStages',
         payload,
         {
           headers: RequestOptions(),
@@ -153,12 +165,16 @@ export default class ApprovalService {
   }
 
   static async DeleteApprovalStage(payload: DeleteApprovalStages) {
+    console.log('API Call DELEting', payload);
     return (
       await api.delete<ResponseModel<boolean>>(
         '/api/Approval/DeleteRequestStages',
         {
           headers: RequestOptions(),
-          data: payload,
+          data: {
+            approvalRequestType: payload.approvalRequestType,
+            version: payload.version,
+          },
         }
       )
     ).data;

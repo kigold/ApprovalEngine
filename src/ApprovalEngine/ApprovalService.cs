@@ -302,6 +302,8 @@ namespace ApprovalEngine
             }
             if (request.IsReturned != null && request.IsReturned.Value)
                 queryable = queryable.Where(x => x.Status == ApprovalStatus.Returned);
+            if ( !string.IsNullOrEmpty(request.Stage))
+                queryable = queryable.Where(x => x.Stage.ToLower() == request.Stage.ToLower());
 
             return new ResultModel<PagedList<ApprovalRequestResponse>>(new PagedList<ApprovalRequestResponse>(queryable.Select(x => (ApprovalRequestResponse)x), request.PageIndex, request.PageSize));
         }
@@ -331,7 +333,6 @@ namespace ApprovalEngine
 
         public async Task<ResultModel<List<ApprovalHistoryResponse>>> GetRequestsHistory(long approvalRequestId)
         {
-            await Task.Delay(2000);
             var result = _approvalHistoryRepository.Get(x => x.ApprovalRequestId == approvalRequestId,
                                                         x => x.OrderByDescending(o => o.Created),
                                                         includeProperties: "Creator");
@@ -342,6 +343,22 @@ namespace ApprovalEngine
         #endregion
 
         #region Admin
+
+        public async Task<ResultModel<List<ApprovalTypeResponse>>> GetAllApprovalTypes()
+        {
+            var query = _approvalStageRepository.Get()
+                .ToList()
+                .GroupBy(x => x.ApprovalType);
+
+            var result = new List<ApprovalTypeResponse>();
+            foreach(var approvalType in query)
+            {
+                var group = approvalType.GroupBy(x => x.Version);
+                result.Add(new ApprovalTypeResponse(approvalType.Key.ToString(), group.Count()));
+            }
+             
+            return new ResultModel<List<ApprovalTypeResponse>>(result);
+        }
 
         public async Task<ResultModel<List<ApprovalStageResponse>>> GetApprovalStages(GetApprovalStageRequest model)
         {
@@ -374,7 +391,7 @@ namespace ApprovalEngine
             {
                 _approvalStageRepository.Insert(new ApprovalStage
                 {
-                    ApprovalType = model.ApprovalRequestType,
+                    ApprovalType = model.ApprovalRequestType.Value,
                     DeclineToOrder = stage.DeclineToOrder,
                     Name = stage.Stage,
                     Permission = stage.Permission,

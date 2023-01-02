@@ -3,8 +3,6 @@ import {
   Approval,
   ApprovalHistory,
   ApprovalModel,
-  CreateApprovalStage,
-  DeleteApprovalStages,
   GetApprovalsQuery,
 } from 'src/models/approval';
 import ApprovalService from '../services/approval.service';
@@ -36,7 +34,7 @@ export const useApprovalStore = defineStore('approval', {
       return state.totalCount;
     },
     getLoading: (state) => {
-      return state.loading;
+      return true;
     },
     getPage: (state) => {
       return state.page;
@@ -95,36 +93,6 @@ export const useApprovalStore = defineStore('approval', {
         }
       } catch (error: any) {
         this.error = error.message as string;
-        Toast(error.message);
-      } finally {
-        this.loading = false;
-      }
-    },
-
-    async createApprovalStageAsync(payload: CreateApprovalStage) {
-      this.loading = true;
-      try {
-        const response = await ApprovalService.CreateApprovalStage(payload);
-        if (response.hasErrors) {
-          this.error = response.errors.toString();
-        }
-      } catch (error: any) {
-        this.error = error as string;
-        Toast(error.message);
-      } finally {
-        this.loading = false;
-      }
-    },
-
-    async deleteApprovalStageAsync(payload: DeleteApprovalStages) {
-      this.loading = true;
-      try {
-        const response = await ApprovalService.DeleteApprovalStage(payload);
-        if (response.hasErrors) {
-          this.error = response.errors.toString();
-        }
-      } catch (error: any) {
-        this.error = error as string;
         Toast(error.message);
       } finally {
         this.loading = false;

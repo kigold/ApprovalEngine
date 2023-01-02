@@ -43,7 +43,7 @@ const getApprovals = computed(() => {
 });
 
 const getLoading = computed(() => {
-  return store.getLoading;
+  return store.loading;
 });
 
 const pagination = computed(() => {

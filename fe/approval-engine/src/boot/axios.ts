@@ -2,6 +2,7 @@ import { boot } from 'quasar/wrappers';
 import axios, { AxiosInstance } from 'axios';
 import config from './../config';
 import AuthService from 'src/services/auth.service';
+import { HandleError } from 'src/services/toast.helper';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -23,6 +24,12 @@ api.interceptors.response.use(
   },
   async function (error) {
     const originalRequest = error.config;
+    //handlle 400 error messages
+    if (error.response.status === 400) {
+      HandleError(JSON.stringify(error.response.data.errors));
+    }
+
+    //handle jwt refresh
     if (
       (error.response.status === 401 || error.response.status === 403) &&
       !originalRequest._retry

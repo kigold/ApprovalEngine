@@ -1,5 +1,6 @@
 ﻿using ApprovalEngine.Enums;
 using SampleApp.Core.Data.Entities.ApprovalEngine;
+using System.ComponentModel.DataAnnotations;
 
 namespace ApprovalEngine.Models
 {
@@ -12,7 +13,8 @@ namespace ApprovalEngine.Models
         );
 
     public record CreateApprovalStage(
-            ApprovalType ApprovalRequestType,
+            [Required]
+            ApprovalType? ApprovalRequestType,
             List<ApprovalStageModel> Stages
         );
 
@@ -45,4 +47,6 @@ namespace ApprovalEngine.Models
     }
 
     public record ApprovalStageByVersion(int Version, IEnumerable<ApprovalStageResponse> Stages);
+
+    public record ApprovalTypeResponse(string Name, int VersionCount);
 }
