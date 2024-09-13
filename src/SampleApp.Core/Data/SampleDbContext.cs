@@ -62,8 +62,6 @@ namespace SampleApp.Core.Data
             optionsBuilder.UseSqlServer(connectionString);
         }
 
-
-
         private void SeedData(ModelBuilder builder)
         {
             var stages = new List<ApprovalStage>()
@@ -77,6 +75,7 @@ namespace SampleApp.Core.Data
                     Permission = ApprovalEngine.Enums.Permission.HOD,
                     DeclineToOrder = 1,
                     Version = 1,
+                    CreatedBy = 1
                 },
                 new ApprovalStage()
                 {
@@ -87,6 +86,7 @@ namespace SampleApp.Core.Data
                     Permission = ApprovalEngine.Enums.Permission.Admin,
                     DeclineToOrder = 1,
                     Version = 1,
+                    CreatedBy = 1
                 },
                 new ApprovalStage()
                 {
@@ -97,9 +97,19 @@ namespace SampleApp.Core.Data
                     Permission = ApprovalEngine.Enums.Permission.IT,
                     DeclineToOrder = 2,
                     Version = 1,
+                    CreatedBy = 1
                 }
             };
 
+            var user = new User
+            {
+                Id = 1,
+                Firstname = "Primodial",
+                Lastname = "Adam",
+                Email = "ap@eden.com",
+            };
+
+            builder.Entity<User>().HasData(user);
             builder.Entity<ApprovalStage>().HasData(stages);
         }
     }
