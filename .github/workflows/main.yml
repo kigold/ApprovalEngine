@@ -1,0 +1,40 @@
+name: Integration Tests
+
+on:
+#   schedule:
+#     - cron: '0 0 * * *' # 00:00 midnight UTC
+  workflow_dispatch:
+
+jobs:
+  integration-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - run: |
+          az webapp list --query "[?state=='Running']"
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Install dependencies
+        working-directory: ./tests
+        run: dotnet restore
+
+      - name: Build        
+        working-directory: ./tests
+        run: dotnet build --no-restore
+
+      - name: Run Integration Tests
+        working-directory: ./tests
+        run: dotnet test --no-build
+
+          
