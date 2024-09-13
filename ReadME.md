@@ -96,18 +96,24 @@ Open /fe in your command line and run the command below
 This will start the frontend app on http://localhost:8080
 
 From the Frontend application you should be able to login with the following seeded users
+using password: "P@ssw0rd"
 
 - admin@sample.com,
 - it@sample.com,
-- hod@sample.com,
-  using password: "P@ssw0rd"
-  these users have the following permissions respectively
+- hod@sample.com
+
+### Permission
+
+These seeded users have the following permissions respectively
+
 - ADMIN
 - IT
 - HOD
 
 You should be able to create a Student from the app, once this is done an approval request is added to the Approvals table,
-each approval item has a Stage which shows the Permission required for the current level of approval, you can login in with the appropriate user and then attempt to approve.
+each approval item has a Stage which shows the Permission required for the current level of approval.
+
+You can login in with the appropriate user and then attempt to approve.
 
 When all the stages of approval has been completed, that status of the Student record will be updated to Approved.
 This simulates the end of the approval process.
@@ -129,7 +135,3 @@ To simulate a change in the approval flow, go to the Admin -> Stages page and Cr
 - [x] Authentication and Authorization
 - [x] Front End Application (React or Vue)
 - [] Drag and Drop approval
-
-```
-
-```
