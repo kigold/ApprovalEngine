@@ -28,7 +28,7 @@ namespace ApprovalEngine.Models
                 Status = model.Status.ToString(),
                 Version = model.Version,
                 Created = model.Created,
-                Creator = model.Creator.FullName
+                Creator = model.Creator?.FullName
             };
         }
     }

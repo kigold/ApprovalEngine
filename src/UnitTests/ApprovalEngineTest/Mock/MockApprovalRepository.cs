@@ -48,10 +48,14 @@ namespace UnitTests.ApprovalEngineTest.Mock
             var approvals = ApprovalRequests.AsQueryable();
 
             mock.Setup(x => x.Get(
-                It.IsAny<Expression<Func<ApprovalRequest, bool>>>(),
-                It.IsAny<Func<IQueryable<ApprovalRequest>, IOrderedQueryable<ApprovalRequest>>>(), 
-                It.IsAny<string>()))
-                .Returns(() => approvals);
+                    It.IsAny<Expression<Func<ApprovalRequest, bool>>>(),
+                    It.IsAny<Func<IQueryable<ApprovalRequest>, IOrderedQueryable<ApprovalRequest>>>(), 
+                    It.IsAny<string>()))
+                .Returns(
+                    (Expression<Func<ApprovalRequest, bool>> predicate,
+                    Func<IQueryable<ApprovalRequest>, IOrderedQueryable<ApprovalRequest>> queryable,
+                    string include) 
+                        => approvals.Where(predicate));
 
             mock.Setup(x => x.GetByID(It.IsAny<long>()))
                 .Returns((long id) => approvals.FirstOrDefault(a => a.Id == id));
