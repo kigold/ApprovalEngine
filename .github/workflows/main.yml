@@ -9,7 +9,7 @@ on:
 # workflow_dispatch:
     push:
       branches:
-        - main
+        - tests/*
         - '*'
 
 jobs:
@@ -33,15 +33,15 @@ jobs:
           dotnet-version: '6.0.x'
 
       - name: Install dependencies
-        working-directory: ${{env.WORK_DIR}}
+        working-directory: ${{ env.WORK_DIR }}
         run: dotnet restore
 
       - name: Build        
-        working-directory: ${{env.WORK_DIR}}
+        working-directory: ${{ env.WORK_DIR }}
         run: dotnet build --no-restore
 
       - name: Run Integration Tests
-        working-directory: ${{env.WORK_DIR}}
+        working-directory: ${{ env.WORK_DIR }}
         run: dotnet test --no-restore --no-build
 
           

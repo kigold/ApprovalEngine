@@ -288,7 +288,7 @@ namespace ApprovalEngine
 
         public async Task<ResultModel<PagedList<ApprovalRequestResponse>>> GetRequests(GetApprovalsRequest request)
         {
-            var queryable = _approvalRepository.Get(includeProperties: "Creator");
+            var queryable = _approvalRepository.Get(null, null, "Creator");
 
             if (request.EntityId != null)
                 queryable = queryable.Where(x => x.EntityId == request.EntityId);
@@ -413,8 +413,8 @@ namespace ApprovalEngine
                 return new ResultModel<bool>("Approval Stages not found");
 
             //Check for pending Approval request dependent on the approvalsStages
-            var hasPendingRequests = _approvalRepository.Get().Any(x => x.ApprovalType == model.ApprovalRequestType && x.Version == model.Version &&
-                    (x.Status == ApprovalStatus.Created || x.Status == ApprovalStatus.Pending));//TODO Optimize query;
+            var hasPendingRequests = _approvalRepository.Get(x => x.ApprovalType == model.ApprovalRequestType && x.Version == model.Version &&
+                    (x.Status == ApprovalStatus.Created || x.Status == ApprovalStatus.Pending)).Any();//TODO Optimize query;
             if (hasPendingRequests)
                 return new ResultModel<bool>("The selected Approval Stages have pending approval requests and cannot be deleted");
 

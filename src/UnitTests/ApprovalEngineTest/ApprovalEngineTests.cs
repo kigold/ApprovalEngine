@@ -5,6 +5,7 @@ using Moq;
 using SampleApp.Core;
 using SampleApp.Core.Data.Entities.ApprovalEngine;
 using System.Collections;
+using System.Security.Claims;
 using UnitTests.ApprovalEngineTest.Mock;
 
 namespace UnitTests.ApprovalEngineTest
@@ -15,11 +16,22 @@ namespace UnitTests.ApprovalEngineTest
 
         public ApprovalEngineTests()
         {
+            var httpUserService = new Mock<IHttpUserService>();
+            var claimsIdentity = new ClaimsIdentity(new Claim[]
+            {
+                new Claim("subject", "1"),
+                new Claim("email", "tester@test.com")
+            });
+            var user = new UserPrincipal(new System.Security.Claims.ClaimsPrincipal(claimsIdentity));
+
+            httpUserService.Setup(x => x.GetCurrentUser())
+                .Returns(user);
+
             _approvalService = new ApprovalService(
                     MockApprovalRepository.GetMock().Object,
                     MockApprovalStageRepository.GetMock().Object,
                     MockApprovalHistoryRepository.GetMock().Object,
-                    new Mock<IHttpUserService>().Object
+                    httpUserService.Object
                 );
         }
 
