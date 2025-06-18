@@ -55,7 +55,9 @@ namespace UnitTests.ApprovalEngineTest.Mock
                     (Expression<Func<ApprovalRequest, bool>> predicate,
                     Func<IQueryable<ApprovalRequest>, IOrderedQueryable<ApprovalRequest>> queryable,
                     string include) 
-                        => approvals.Where(predicate));
+                        => predicate == null 
+                             ? approvals
+                             : approvals.Where(predicate));
 
             mock.Setup(x => x.GetByID(It.IsAny<long>()))
                 .Returns((long id) => approvals.FirstOrDefault(a => a.Id == id));
