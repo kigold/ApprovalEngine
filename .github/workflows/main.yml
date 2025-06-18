@@ -33,15 +33,15 @@ jobs:
           dotnet-version: '6.0.x'
 
       - name: Install dependencies
-        working-directory: './src'
+        working-directory: $WORK_DIR
         run: dotnet restore
 
       - name: Build        
-        working-directory: './src'
+        working-directory: $WORK_DIR
         run: dotnet build --no-restore
 
       - name: Run Integration Tests
-        working-directory: './src'
+        working-directory: $WORK_DIR
         run: dotnet test --no-build
 
           
