@@ -37,11 +37,11 @@ jobs:
         run: dotnet restore
 
       - name: Build        
-        working-directory: ${{ env.WORK_DIR }}
+        working-directory: ${{env.WORK_DIR}}
         run: dotnet build --no-restore
 
       - name: Run Integration Tests
-        working-directory: ${{ env.WORK_DIR }}
-        run: dotnet test --no-build
+        working-directory: ${{env.WORK_DIR}}
+        run: dotnet test --no-restore --no-build
 
           
