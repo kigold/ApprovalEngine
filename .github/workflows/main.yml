@@ -1,7 +1,7 @@
 name: Integration Tests
 
-# env:
-#   WORK_DIR: '../../src/tests'
+env:
+  WORK_DIR: './src'
 
 on:
 #   schedule:
