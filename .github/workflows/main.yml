@@ -1,5 +1,8 @@
 name: Integration Tests
 
+env:
+  WORK_DIR: '../../src/tests'
+
 on:
 #   schedule:
 #     - cron: '0 0 * * *' # 00:00 midnight UTC
@@ -30,15 +33,15 @@ jobs:
           dotnet-version: '6.0.x'
 
       - name: Install dependencies
-        working-directory: ./tests
+        working-directory: ${{WORK_DIR}}
         run: dotnet restore
 
       - name: Build        
-        working-directory: ./tests
+        working-directory: ${{WORK_DIR}}
         run: dotnet build --no-restore
 
       - name: Run Integration Tests
-        working-directory: ./tests
+        working-directory: ${{WORK_DIR}}
         run: dotnet test --no-build
 
           
