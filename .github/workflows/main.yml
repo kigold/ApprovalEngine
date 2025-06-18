@@ -10,7 +10,7 @@ on:
     push:
       branches:
         - main
-        - feature/github_actions_build
+        - test
 
 jobs:
   integration-tests:
