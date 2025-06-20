@@ -2,6 +2,8 @@ name: Integration Tests
 
 env:
   WORK_DIR: './src'
+  APP_NAME: ${{ vars.APPROVAL_APP_NAME }}
+
 
 on:
 #   schedule:
@@ -9,12 +11,15 @@ on:
 # workflow_dispatch:
     push:
       branches:
-        - tests/*
         - '*'
+    pull_request:
+      branches:
+        - master
 
 jobs:
   integration-tests:
     runs-on: ubuntu-latest
+    environment: dev
     steps:
       # - name: Azure Login
       #   uses: azure/login@v1
@@ -43,5 +48,22 @@ jobs:
       - name: Run Integration Tests
         working-directory: ${{ env.WORK_DIR }}
         run: dotnet test --no-restore --no-build
+
+      - name: Print name
+        run: echo "Hello $NAME. $BUILD. Using work dir $WORK_DIR. My API_KEY is ${{secrets.TEST_SECRET}}"
+        env:   
+            BUILD: 'We are currently running the Build job'
+
+      - name: Test Variables and Secret
+        run: |
+            ls
+            echo "env.AppName" ${{env.WORK_DIR}}
+            echo "env.AppName - ${{env.APP_NAME}}"
+            echo "vars.AppName - ${{vars.APPROVAL_APP_NAME}}"
+            echo "secret - ${{secrets.TEST_SECRET}}"
+
+      - name: Dump environment
+        run: printenv
+
 
           
