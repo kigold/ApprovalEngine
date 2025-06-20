@@ -62,4 +62,8 @@ jobs:
             echo "vars.AppName - ${{vars.APPROVAL_APP_NAME}}"
             echo "secret - ${{secrets.TEST_SECRET}}"
 
+      - name: Dump environment
+        run: printenv
+
+
           
