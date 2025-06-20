@@ -57,7 +57,7 @@ jobs:
         run: |
             ls
             echo "env.AppName" ${{env.WORK_DIR}}
-            echo "env.AppName - ${{env.APP_NAME}} 
+            echo "env.AppName - ${{env.APP_NAME}}"
             echo "vars.AppName - ${{vars.APPROVAL_APP_NAME}}"
             echo "secret - ${{secrets.TEST_SECRET}}"
 
