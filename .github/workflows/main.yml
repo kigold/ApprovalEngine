@@ -2,6 +2,8 @@ name: Integration Tests
 
 env:
   WORK_DIR: './src'
+  APP_NAME: ${{ vars.APPROVAL_APP_NAME }}
+
 
 on:
 #   schedule:
@@ -45,5 +47,11 @@ jobs:
       - name: Run Integration Tests
         working-directory: ${{ env.WORK_DIR }}
         run: dotnet test --no-restore --no-build
+      - name: Test Variables and Secret
+        run: |
+            ls
+            echo "env.AppName" ${{ env.APP_NAME }}
+            echo "vars.AppName" ${{ vars.APPROVAL_APP_NAME }}
+            echo "secret" ${{ secrets.TEST_SECRET }}
 
           
