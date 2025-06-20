@@ -47,12 +47,18 @@ jobs:
       - name: Run Integration Tests
         working-directory: ${{ env.WORK_DIR }}
         run: dotnet test --no-restore --no-build
+
+      - name: Print name
+        run: echo "Hello $NAME. $BUILD. Using work dir $WORK_DIR. My API_KEY is ${{secrets.TEST_SECRET}}"
+        env:   
+            BUILD: 'We are currently running the Build job'
+
       - name: Test Variables and Secret
         run: |
             ls
-            echo "env.AppName" ${{ env.WORK_DIR }}
-            echo "env.AppName" ${{ env.APP_NAME }}
-            echo "vars.AppName" ${{ vars.APPROVAL_APP_NAME }}
-            echo "secret" ${{ secrets.TEST_SECRET }}
+            echo "env.AppName" ${{env.WORK_DIR}}
+            echo "env.AppName - ${{env.APP_NAME}} 
+            echo "vars.AppName - ${{vars.APPROVAL_APP_NAME}}"
+            echo "secret - ${{secrets.TEST_SECRET}}"
 
           
